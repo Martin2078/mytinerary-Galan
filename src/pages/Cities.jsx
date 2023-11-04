@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import searchIcon from '../assets/search-icon.png'
 import { Link } from 'react-router-dom'
 import ubication from '../assets/ubication.png'
-import buenosAires from '../assets/buenosAires.jpg'
+import arrowPagination from '../assets/arrowPagination.png'
 import axios from 'axios'
 import notFinded from '../assets/notFinded.png'
+import Carrousel from '../components/Carrousel'
 
 const Cities = () => {
   const [text, setText] = useState("")
@@ -13,10 +14,14 @@ const Cities = () => {
   const [prev, setPrev] = useState(false)
   const [maxPages, setMaxPages] = useState()
   const [cities, setCities] = useState()
+  const [populars, setPopulars] = useState()
   async function getCities() {
     try {
       let response = await axios.get(`http://localhost:8080/cities?text=${text}&page=${page}`)
       setCities(response.data.response.cities)
+      if (populars == undefined) {
+        setPopulars([response.data.response.cities[0].photo[0], response.data.response.cities[1].photo[0], response.data.response.cities[2].photo[0], response.data.response.cities[3].photo[0]])
+      }
       setPrev(response.data.response.prev)
       setNext(response.data.response.next)
       setMaxPages(response.data.response.maxPages)
@@ -24,14 +29,14 @@ const Cities = () => {
       console.log(error);
     }
   }
-  function createPageButton(start,end) {
+  function createPageButton(start, end) {
     let template = []
-      for (let i = start; i <= end; i++) {
-        template.push(
-          <button onClick={() => setPage(i)} className='text-lg'><p className={`${page == i && "text-blue-700"} font-semibold`}>{i}..</p></button>
-        )
+    for (let i = start; i <= end; i++) {
+      template.push(
+        <button onClick={() => setPage(i)} className='text-lg'><p className={`${page == i && "text-blue-700"} font-semibold`}>{i}..</p></button>
+      )
 
-      }
+    }
 
     return template
   }
@@ -43,23 +48,24 @@ const Cities = () => {
 
   return (
     <div className='w-full min-h-screen '>
-      <div className='w-full h-[45vh] bg-black'>
-
+      <div className='w-full h-[55vh]'>
+        {populars && <Carrousel data={populars} classes={"w-full h-full relative"} img={"object-cover w-full h-[55vh]"} />}
       </div>
+
       <div className='w-full h-full flex flex-col items-center mt-[2vh] '>
 
         <div className='flex items-center justify-center w-4/12 h-[4vh] rounded border px-4 py-1 checked:border-2'>
-          <input onChange={(e) => {setText(e.target.value);setPage(1)}} className='w-full h-full outline-none' type="text" placeholder='Search city or country' />
+          <input onChange={(e) => { setText(e.target.value); setPage(1) }} className='w-full h-full outline-none' type="text" placeholder='Search city' />
           <img className='h-full' src={searchIcon} alt="" />
         </div>
 
-        <div className='max-w-[100vw] min-h-[47vh] mt-[2vh] flex flex-wrap items-start justify-center py-[3vh] px-[4vw]'>
+        <div className='max-w-[100vw] min-h-[40vh] mt-[2vh] flex flex-wrap items-start justify-center py-[3vh] px-[4vw]'>
 
           {cities?.length > 0 && cities[0] !== null ?
             <>
               <div className='max-w-[100vw] min-h-[33vh] flex flex-wrap items-start justify-center gap-x-[3vw] gap-y-[4vh]'>
                 {cities.map((city) => {
-                  return <div className='cursor-pointer  w-[20vw] h-[20vh] rounded-xl bg-white px-3 py-3 flex flex-col justify-between hover:scale-110' style={{ backgroundImage: `url(${buenosAires})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
+                  return <div className='cursor-pointer  w-[20vw] h-[20vh] rounded-xl bg-white px-3 py-3 flex flex-col justify-between hover:scale-110' style={{ backgroundImage: `url(${city.photo[0]})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
                     <div className='flex flex-col gap-1'>
                       <h4 className='text-white font-bold text-lg'>{city?.cityName}</h4>
                       <div className='flex items-center gap-1'>
@@ -67,16 +73,20 @@ const Cities = () => {
                         <p className='text-white text-base'>{city?.country}</p>
                       </div>
                     </div>
-                    <button className='w-3/6 bg-emerald-500 rounded py-1'><Link to={`/Cities/${city?._id}`}><p className='text-white'>View More</p></Link></button>
+                    <button className='w-3/6 bg-emerald-500 rounded py-1'><Link to={`/Cities/${city._id}`}><p className='text-white'>View More</p></Link></button>
                   </div>
                 })}
               </div>
 
-              <div className='w-full h-[5vh] flex justify-center mt-[3vh]'>
-                <div className='w-1/6 h-full flex items-end justify-center gap-4'>
-                  <button onClick={()=>setPage(page-1)} className={`${!prev && "hidden"}`}>prev</button>
-                  {maxPages < 2 ? <button><p className='text-lg'>1</p></button> : createPageButton(1,maxPages)}
-                  <button onClick={()=>setPage(page+1)} className={`${!next && "hidden"}`}>Next</button>
+              <div className='w-full h-[4vh] flex justify-center mt-[3vh]'>
+                <div className='w-1/6 h-full flex items-center justify-center gap-4'>
+                  <button onClick={() => setPage(page - 1)} className={`${!prev && "hidden"}`}>
+                    <img className='rotate-180' src={arrowPagination} alt="" />
+                  </button>
+                  {maxPages < 2 ? <button><p className='text-lg'>1</p></button> : createPageButton(1, maxPages)}
+                  <button onClick={() => setPage(page + 1)} className={`${!next && "hidden"}`}>
+                    <img src={arrowPagination} alt="" />
+                  </button>
                 </div>
 
               </div></>
