@@ -6,7 +6,7 @@ const Header = () => {
   const home=useMatch('/')
   const cities=useMatch('/Cities')
   return (
-    <div className='w-screen h-[6vh] bg-[#000000a4] fixed top-0 py-2 px-28 flex justify-between items-center'>
+    <div className='w-screen h-[6vh] z-10 bg-[#000000a4] fixed top-0 py-2 px-28 flex justify-between items-center'>
       <Link className='cursor-pointer' to={'/'}><h1 className='text-2xl font-semibold text-white'>MyTinerary</h1></Link>
       <div className='flex items-center justify-center gap-5'>
         <Link to={"/"}><p className={`${home!=null?"text-blue-400":"text-white"}`}>Home</p></Link>
