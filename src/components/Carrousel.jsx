@@ -18,7 +18,7 @@ const Carrousel = ({data,classes,img}) => {
     <div className={`${classes} z-0 `}>
         <Slider {...settings}>
           {data.map((photo)=>{
-            return <div className='w-screen h-screen'>
+            return <div className=''>
                 <img className={`${img}`} src={photo} alt="" />
             </div>
           })}

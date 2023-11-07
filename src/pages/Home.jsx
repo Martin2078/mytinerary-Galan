@@ -8,8 +8,10 @@ import backgroundImage from '../assets/backgroundImage.jpg'
 import backgroundImage2 from '../assets/backgroundImage2.jpg'
 import backgroundImage3 from '../assets/backgroundImage3.jpg'
 import backgroundImage6 from '../assets/backgroundImage6.jpg'
+
 const Home = () => {
   const data = [backgroundImage, backgroundImage2, backgroundImage3, backgroundImage6]
+
   return (
     <div className='w-screen h-screen'>
       <Carrousel data={data} classes={"w-screen h-screen fixed top-0"} img={'w-screen h-screen'}/>
