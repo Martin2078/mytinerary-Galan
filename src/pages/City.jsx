@@ -10,7 +10,7 @@ import Carrousel from '../components/Carrousel'
 const City = () => {
   const { id } = useParams()
   const [infoCity, setInfoCity] = useState()
-  const [data,setData]=useState()
+  const [data, setData] = useState()
   const itineraryScroll = useRef(null)
 
   async function getCity() {
@@ -26,16 +26,28 @@ const City = () => {
     itineraryScroll.current.scrollIntoView({ behavior: 'smooth' })
   }
   return (
-    <div className='w-screen min-h-[200vh]'>
-      <div className='w-screen h-[100vh] flex items-center justify-center'>
-      {data&&<Carrousel data={data} classes={"h-full w-full absolute left-0 top-0"} img={"w-screen h-screen object-cover"}/>}
-        <div className='w-3/6 h-4/6 flex flex-col items-center justify-center gap-5 bg-[#17171743] rounded-xl px-10 z-10'>
-          <h1 className='text-5xl text-white font-semibold z-10'>{infoCity?.cityName}</h1>
-          <p className='text-lg text-white text-center z-10'>{infoCity?.description}</p>
-          <button onClick={() => scrollToItinerarys()} className='z-10 w-4/12 h-10 bg-emerald-500 rounded-lg flex items-center'>
-            <p className='w-5/6 text-lg text-white font-semibold'>View Itinerary</p>
-            <img className='h-3' src={itinerarysArrow} alt="" />
-          </button>
+    <div className='w-full min-h-[200vh]'>
+      <div className='w-full h-[100vh] flex flex-col items-start mt-[8vh] px-10 gap-5'>
+        <div className='w-full h-fit '>
+        <h1 className='text-5xl font-semibold'>{infoCity?.cityName}</h1>
+        <h2 className='text-2xl'>{infoCity?.country}</h2>
+        </div>
+        <div className='w-full h-[60vh] flex '>
+          <div className='w-8/12 h-full mr-5 '>
+            <img className='w-full h-full object-cover rounded-lg' src={infoCity?.photo[0]} alt="" />
+          </div>
+          <div className='w-4/12 h-full'>
+            <div className='h-3/4 w-full pb-2'>
+              <img className='w-full h-full object-cover rounded-lg' src={infoCity?.photo[1]} alt="" />
+            </div>
+            <div className='h-1/4 w-full'> 
+              <img className='w-full h-full object-cover rounded-lg' src={infoCity?.photo[2]} alt="" />
+            </div>
+          </div>
+        </div>
+        <div className='w-10/12 h-[18vh]'>
+        <h3 className='font-semibold text-lg'>Description</h3>
+        <p>{infoCity?.description}</p>
         </div>
       </div>
       <div className='w-full min-h-[100vh]' ref={itineraryScroll}>
