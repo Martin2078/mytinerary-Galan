@@ -32,7 +32,7 @@ const City = () => {
   useEffect(() => {
     getCity()
     getItineraries()
-    // scrollToTop()
+    scrollToTop()
   }, [])
 
   function scrollToTop() {
