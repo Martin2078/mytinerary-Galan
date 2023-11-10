@@ -5,6 +5,7 @@ import Layout from "../layouts/layout";
 import SignIn from '../pages/SignIn'
 import Register from '../pages/Register'
 import City from "../pages/City";
+import MyTineraries from "../pages/MyTineraries";
 const router=createBrowserRouter([
     {
         path:'/',
@@ -29,6 +30,10 @@ const router=createBrowserRouter([
             {
                 path:'/Register',
                 element:<Register/>
+            },
+            {
+                path:'/MyTineraries',
+                element:<MyTineraries/>
             },
             
         ]

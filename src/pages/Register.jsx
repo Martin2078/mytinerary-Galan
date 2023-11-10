@@ -89,7 +89,7 @@ const Register = () => {
               </div>
           </div>
           <div className='w-full flex justify-end'>
-          <button onClick={()=>getEmailAndPassword()} className='px-6 py-2 bg-emerald-500 rounded-lg'>
+          <button onClick={()=>getEmailAndPassword()} className='px-6 py-2 bg-[#2dc77f] rounded-lg'>
             <p className='text-white font-semibold'>Continue</p>
           </button>
           </div>
@@ -127,7 +127,7 @@ const Register = () => {
             <input onChange={(e)=>setData({...data,photo:e.target.value})} className='border-b text-sm border-black w-full outline-none' placeholder='url' type="url" />
           </div>
           <div className='w-full flex justify-end'>
-          <button onClick={()=>registerFunction()} className='lg:px-6 lg:py-2 px-4 py-1 bg-emerald-500 rounded-lg'>
+          <button onClick={()=>registerFunction()} className='lg:px-6 lg:py-2 px-4 py-1 bg-[#2dc77f] rounded-lg'>
             <p className='text-white font-semibold'>Register</p>
           </button>
           </div>

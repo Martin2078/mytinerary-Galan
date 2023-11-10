@@ -10,7 +10,7 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import menu from '../assets/menu.png'
 import close from '../assets/close.png'
-
+import myItineraries from '../assets/myItineraries.png'
 
 const Header = () => {
   const home = useMatch('/')
@@ -78,7 +78,7 @@ const Header = () => {
                 <img className='h-auto lg:h-[4vh] w-[10vw] lg:w-[3vw] object-cover object-center rounded-full' src={user.photo} alt="" />
               </button>
               :
-              <button className='w-20 h-8 py-1 px-2 rounded-xl bg-emerald-500'>
+              <button className='w-20 h-8 py-1 px-2 rounded-xl bg-[#2dc77f]'>
                 <Link className='flex items-center justify-center gap-1' to={"/SignIn"}>
                   <img className='w-4 h-4' src={SignInIcon} alt="" />
                   <p className='text-white'>Login</p>
@@ -95,17 +95,17 @@ const Header = () => {
             <Link to={"/Cities"}><p className={`${cities != null ? "text-blue-500" : "text-white"}`}>Cities</p></Link>
             {token ?
               <button onClick={() => setOpen(!open)}>
-                <img className='h-[4vh] w-[3vw] object-cover object-center rounded-full' src={user.photo} alt="" />
+                <img className='h-10 w-10 object-cover object-center rounded-full' src={user.photo} alt="" />
                 {open && <div className='w-[10vw] -translate-x-24 h-[16vh] bg-white rounded-xl absolute flex flex-col items-center py-2 px-4'>
                   <ul className='list-none flex flex-col justify-evenly h-full'>
-                    <DropdownItem img={logOut} text={"Itineraries"} />
+                    <DropdownItem img={myItineraries} text={"MyTinery"} link={"/MyTineraries"} />
                     <DropdownItem img={signIn} text={"Profile"} link={"/Cities"} />
                     <button onClick={() => LogOutFunction()}><DropdownItem img={logOut} text={"Log Out"} /></button>
                   </ul>
                 </div>}
               </button>
               :
-              <button className='w-20 h-8 py-1 px-2 rounded-xl bg-emerald-500'>
+              <button className='w-20 h-8 py-1 px-2 rounded-xl bg-[#2dc77f]'>
                 <Link className='flex items-center justify-center gap-1' to={"/SignIn"}>
                   <img className='w-4 h-4' src={SignInIcon} alt="" />
                   <p className='text-white'>Login</p>

@@ -80,7 +80,7 @@ const SignIn = () => {
                 <input onChange={(e) => setMail(e.target.value)} className='border-b text-sm border-black w-full outline-none' type="text" />
               </div>
               <div className='w-full flex justify-end'>
-                <button onClick={() => getEmail()} className='lg:px-6 lg:py-2 px-4 py-1 bg-emerald-500 rounded-lg'>
+                <button onClick={() => getEmail()} className='lg:px-6 lg:py-2 px-4 py-1 bg-[#2dc77f] rounded-lg'>
                   <p className='text-white font-semibold'>Continue</p>
                 </button>
               </div>
@@ -104,7 +104,7 @@ const SignIn = () => {
                 </div>
               </div>
               <div className='w-full flex justify-end'>
-                <button onClick={() => SignInUser()} className='px-6 py-2 bg-emerald-500 rounded-lg'>
+                <button onClick={() => SignInUser()} className='px-6 py-2 bg-[#2dc77f] rounded-lg'>
                   <p className='text-white font-semibold'>Continue</p>
                 </button>
               </div>

@@ -83,7 +83,7 @@ const Cities = () => {
                         <p className='text-white text-base'>{city?.country}</p>
                       </div>
                     </div>
-                    <button className='w-3/6 bg-emerald-500 rounded py-1'><Link to={`/Cities/${city._id}`}><p className='text-white'>View More</p></Link></button>
+                    <button className='w-3/6 bg-[#2dc77f] rounded py-1'><Link to={`/Cities/${city._id}`}><p className='text-white'>View More</p></Link></button>
                   </div>
                 })}
               </div>
