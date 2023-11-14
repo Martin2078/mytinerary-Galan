@@ -3,10 +3,12 @@ import searchIcon from '../assets/search-icon.png'
 import { Link } from 'react-router-dom'
 import ubication from '../assets/ubication.png'
 import arrowPagination from '../assets/arrowPagination.png'
-import axios from 'axios'
 import notFinded from '../assets/notFinded.png'
 import Carrousel from '../components/Carrousel'
 import '../style.css'
+import { useDispatch, useSelector } from 'react-redux'
+import citiesAction from '../redux/actions/citiesAction'
+import axios from 'axios'
 
 const Cities = () => {
   const [text, setText] = useState("")
@@ -14,22 +16,13 @@ const Cities = () => {
   const [next, setNext] = useState(false)
   const [prev, setPrev] = useState(false)
   const [maxPages, setMaxPages] = useState()
-  const [cities, setCities] = useState()
+  const [cities, setCities] = useState([])
+  const [citiesData, setCitiesData] = useState([])
   const [populars, setPopulars] = useState()
-  async function getCities() {
-    try {
-      let response = await axios.get(`http://localhost:8080/cities?text=${text}&page=${page}`)
-      setCities(response.data.response.cities)
-      if (populars == undefined) {
-        setPopulars([response.data.response.cities[0].photo[0], response.data.response.cities[1].photo[0], response.data.response.cities[2].photo[0], response.data.response.cities[3].photo[0]])
-      }
-      setPrev(response.data.response.prev)
-      setNext(response.data.response.next)
-      setMaxPages(response.data.response.maxPages)
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const dispatch=useDispatch()
+  const citiesStore=useSelector((store)=>store.citiesReducer)
+  console.log(citiesStore);
+
   function createPageButton(start, end) {
     let template = []
     for (let i = start; i <= end; i++) {
@@ -42,9 +35,44 @@ const Cities = () => {
     return template
   }
 
-  useEffect(() => {
+  async function getCities() {
+    let response= await axios.get('http://localhost:8080/cities')
+    setCitiesData(response.data.response)
+    if (populars == undefined ) {
+      setPopulars([response.data.response[0].photo[0], response.data.response[1].photo[0], response.data.response[2].photo[0], response.data.response[3].photo[0]])
+    }
+    dispatch(citiesAction(response.data.response))
+  }
+
+  function paginationCities() {
+    setMaxPages(Math.ceil(citiesData.length/12))
+    let lastIndex=page*12
+    setCities(citiesData.slice(lastIndex-12,lastIndex))
+    if (page<maxPages) {
+      setNext(true)
+    }else{
+      setNext(false)
+    }
+    if (page>1) {
+      setPrev(true)
+    }else{
+      setPrev(false)
+    }
+    
+  }
+
+  useEffect(()=>{
     getCities()
-  }, [text, page])
+    paginationCities()
+  },[])
+
+  useEffect(()=>{
+
+  },[next,prev])
+
+  useEffect(()=>{
+    paginationCities()
+  },[page,citiesStore])
 
 
   return (
