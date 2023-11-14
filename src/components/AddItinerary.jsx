@@ -16,25 +16,35 @@ const AddItinerary = ({ setCreateItinerary }) => {
     })
     const hashtagRef = useRef()
 
-    async function handleCreate(e) {
-        e.preventDefault()
+    async function createItinerary() {
         console.log(dataItinerary);
-        const keys = Object.keys(dataItinerary)
-        const values = Object.values(dataItinerary)
-        for (let i = 0; i < keys.length; i++) {
-            if (values[i] === null || values[i] === undefined || values[i] === "" || values[i].length < 3) {
-                const toastId=toast.error(`Por favor ingrese ${keys[i]}`)
-                setTimeout(()=>toast.dismiss(toastId),3500)
-            }
-
+        if (dataItinerary.title=="") {
+            toast.error("Please Insert Title!")
         }
-
-
+        if (dataItinerary.photo==null) {
+            toast.error("Please Insert photo!")
+        }
+        if (dataItinerary.price.length<1) {
+            toast.error("Please Insert price!")
+        }
+        if (dataItinerary.duration==undefined) {
+            toast.error("Please Insert duration!")
+        }
+        if (dataItinerary.hashtag.length<1) {
+            toast.error("Please insert almost 3 hashtags!")
+        }
+        if (dataItinerary.activities.length<1) {
+            toast.error("Please insert almost 3 activities!")
+            return
+        }
     }
+
+
+
     function addHashtag() {
         let hashtagName = hashtagRef.current.value.replaceAll(" ", "")
 
-        if (dataItinerary.hashtag.length < 4) {
+        if (dataItinerary.hashtag.length < 8) {
             let startWith = hashtagName.slice(0, 1)
             if (startWith !== "#") {
                 hashtagName = "#" + hashtagName
@@ -46,10 +56,10 @@ const AddItinerary = ({ setCreateItinerary }) => {
                 toast.error("Please insert text on Hashtag!")
             }
         } else {
-            console.log("Hay mas de 4");
+            toast.error("8 hashtags is the max!")
         }
-
     }
+
     function deleteHashtag(indexHash) {
 
         setDataItinerary({
@@ -59,6 +69,11 @@ const AddItinerary = ({ setCreateItinerary }) => {
                 }
             })]
         })
+    }
+
+    function setPrice(value,position) {
+        dataItinerary.price[position]=value
+        
     }
 
     useEffect(() => {
@@ -78,7 +93,7 @@ const AddItinerary = ({ setCreateItinerary }) => {
                     <h1 className='text-4xl font-semibold'>From Travelers</h1>
                     <h2 className='text-3xl font-semibold'>For Travelers</h2>
                 </div>
-                <form onSubmit={(e) => handleCreate(e)} className='w-full h-full flex flex-col justify-evenly'>
+                <div className='w-full h-full flex flex-col justify-evenly'>
                     <div className='w-full '>
                         <p className='font-semibold text-xl'>Title</p>
                         <input onChange={(e) => setDataItinerary({ ...dataItinerary, title: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="text" />
@@ -92,7 +107,7 @@ const AddItinerary = ({ setCreateItinerary }) => {
                     <div className='w-full flex flex-col gap-2'>
                         <p className='font-semibold text-xl'>Price</p>
                         <div className='flex gap-2 items-center'>
-                            <select onChange={(e)=>{setDataItinerary({...dataItinerary,price:[e.target.value]});console.log(dataItinerary)}} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
+                            <select onChange={(e)=>{setPrice(e.target.value,0)}} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
                                 <option value="">Select Price</option>
                                 <option value="1">$</option>
                                 <option value="2">$$</option>
@@ -101,7 +116,7 @@ const AddItinerary = ({ setCreateItinerary }) => {
                                 <option value="4">$$$$$</option>
                             </select>
                             <p>-</p>
-                            <select onChange={(e)=>{setDataItinerary({...dataItinerary,price:[...dataItinerary.price,e.target.value]});console.log(dataItinerary)}} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
+                            <select onChange={(e)=>{setPrice(e.target.value,1)}} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
                                 <option value="">Select Price</option>
                                 <option value="1">$</option>
                                 <option value="2">$$</option>
@@ -140,9 +155,11 @@ const AddItinerary = ({ setCreateItinerary }) => {
                         </div>}
                     </div>
                     <div className='w-full flex items-center justify-center'>
-                        <input className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' value={"Create And Share"} type="submit" />
+                        <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={()=>createItinerary()}>
+                            Create and Share!
+                        </button>
                     </div>
-                </form>
+                </div>
 
             </div>
         </div>
