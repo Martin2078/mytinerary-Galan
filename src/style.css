@@ -27,6 +27,20 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
     animation-name: moveDiv3;
     animation-duration: 4s;
 }
+.animationMyItinerary{
+    animation-name:appearDiv ;
+    animation-duration: 0.5s;
+}
+
+@keyframes appearDiv{
+    from{
+        transform:translate(100%,0)
+    }
+    to{
+        transform:translate(0,0)
+    }
+}
+
 
 @keyframes moveDiv{
     from{

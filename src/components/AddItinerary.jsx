@@ -3,12 +3,19 @@ import closeBlack from '../assets/closeBlack.png'
 import add from '../assets/add.png'
 import toast, { Toaster } from 'react-hot-toast'
 import axios from 'axios'
+import '../style.css'
 
 
 const AddItinerary = ({ setCreateItinerary }) => {
 
     const [step, setStep] = useState(1)
     const [cities, setCities] = useState([])
+    const [activityAdd, setActivityAdd] = useState(false)
+    const [activity,setActivity]=useState({
+        name:"",
+        description:"",
+        photo:undefined
+    })
     const [dataItinerary, setDataItinerary] = useState({
         title: "",
         photo: undefined,
@@ -30,13 +37,23 @@ const AddItinerary = ({ setCreateItinerary }) => {
             toast.error("Please insert almost 3 hashtags!")
         }
         if (dataItinerary.activities.length < 1) {
-            toast.error("Please insert almost 3 activities!")
+            toast.error("Please insert 3 activities!")
             return
         }
     }
 
+    function addActivity() {
+        if (activity.name=="") {
+            toast.error("Please insert activity name!")
+        }
+        if (activity.description=="") {
+            toast.error("Please insert description!")
+        }
+        if (activity.photo==undefined) {
+            toast.error("Please insert activity photo!")
+        }
+    }
     function nextStep() {
-        console.log(dataItinerary);
         if (dataItinerary.title == "") {
             toast.error("Please insert title!")
         }
@@ -51,7 +68,9 @@ const AddItinerary = ({ setCreateItinerary }) => {
         }
         if (dataItinerary.duration == undefined) {
             toast.error("Please Insert duration!")
+            return
         }
+        setStep(2)
 
     }
 
@@ -85,8 +104,8 @@ const AddItinerary = ({ setCreateItinerary }) => {
         })
     }
     function getPhoto(e) {
-    let url=URL.createObjectURL(e.target.files[0])
-    setDataItinerary({...dataItinerary,photo:url})  
+        let url = URL.createObjectURL(e.target.files[0])
+        setDataItinerary({ ...dataItinerary, photo: url })
     }
 
     function setPrice(value, position) {
@@ -104,100 +123,135 @@ const AddItinerary = ({ setCreateItinerary }) => {
                     success: { duration: 1500 },
 
                 }} />
-            <div className='w-[35vw] relative h-full bg-white flex flex-col items-center px-8 rounded-l-2xl'>
+            <div className='w-[35vw] animationMyItinerary relative h-full z-40 bg-white flex flex-col items-center gap-5 px-8 rounded-l-2xl'>
                 <button onClick={() => setCreateItinerary(false)} className='absolute top-4 right-4'><img className='w-5' src={closeBlack} alt="" /></button>
-                <div className='w-full h-[15vh] flex flex-col items-center justify-center'>
+                <div className='w-full h-[15vh] flex flex-col items-center justify-center border-b'>
                     <h1 className='text-4xl font-semibold'>From Travelers</h1>
                     <h2 className='text-3xl font-semibold'>For Travelers</h2>
                 </div>
-                {step == 1 ? 
-                <>
-                <div className='w-full h-5/6 flex flex-col justify-evenly'>
-                    <div className='w-full '>
-                        <p className='font-semibold text-xl'>Title</p>
-                        <input onChange={(e) => setDataItinerary({ ...dataItinerary, title: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="text" />
-                    </div>
-                    <div className='w-full '>
-                        <p className='font-semibold text-xl'>Photo</p>
-                        <input onChange={(e)=>getPhoto(e)} className='' type="file" />
-                        {dataItinerary?.photo !== undefined && <img className='w-2/6 h-[12vh]' src={dataItinerary.photo} alt="" />}
-
-                    </div>
-                    <div className='w-full flex flex-col gap-2'>
-                        <p className='font-semibold text-xl'>City</p>
-                        <select onChange={e=>setDataItinerary({...dataItinerary,city:e.target.value})} name="" id="" className='w-3/6 border rounded-lg py-1 border-black'>
-                            <option value="">Select City</option>
-                            {cities?.map((city)=>{
-                                return <option value={city?.cityName}>{city?.cityName}</option>
-                            })}
-                        </select>
-                    </div>
-                    <div className='w-full flex flex-col gap-2'>
-                        <p className='font-semibold text-xl'>Price</p>
-                        <div className='flex gap-2 items-center'>
-                            <select onChange={(e) => { setPrice(e.target.value, 0) }} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
-                                <option value="">Select Price</option>
-                                <option value="1">$</option>
-                                <option value="2">$$</option>
-                                <option value="3">$$$</option>
-                                <option value="4">$$$$</option>
-                                <option value="4">$$$$$</option>
-                            </select>
-                            <p>-</p>
-                            <select onChange={(e) => { setPrice(e.target.value, 1) }} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
-                                <option value="">Select Price</option>
-                                <option value="1">$</option>
-                                <option value="2">$$</option>
-                                <option value="3">$$$</option>
-                                <option value="4">$$$$</option>
-                                <option value="5">$$$$$</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='w-full flex flex-col gap-2'>
-                        <p className='font-semibold text-xl'>Duration</p>
-                        <input placeholder='min' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className='w-2/6 rounded-lg border px-2 py-1 border-black' type="number" />
-                    </div>
-                </div>
-                <div className='w-full flex items-center justify-center mb-12'>
-                <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => nextStep()}>
-                    Continue
-                </button>
-            </div>
-            </>
-                    :
-                    <><div className='w-full h-5/6 flex flex-col justify-start gap-20'>
-                        <div className='w-full flex flex-col gap-2 '>
-                            <p className='font-semibold text-xl'>Hashtag</p>
-                            {dataItinerary?.hashtag.length > 0 && <div className='w-full min-h-[4vh] flex flex-wrap gap-x-4 gap-y-2'>
-                                {dataItinerary.hashtag.map((hash, index) => {
-                                    return <div className='flex items-center gap-2 border rounded-xl px-2 h-fit py-1'>
-                                        <p className='font-medium'>{hash}</p>
-                                        <button onClick={() => deleteHashtag(index)}><img className='w-2' src={closeBlack} alt="" /></button>
-                                    </div>
-                                })}
-                            </div>}
-                            <div className='w-full rounded-lg flex items-center justify-between'>
-                                <input ref={hashtagRef} className=' w-4/5 py-1 px-2 rounded-lg outline-none border border-black' maxLength={15} type="text" />
-                                <button onClick={() => addHashtag()} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
+                {step == 1 ?
+                    <>
+                        <form className='w-full h-5/6 flex flex-col justify-start gap-10'>
+                            <div className='w-full flex flex-col gap-2'>
+                                <p className='font-semibold text-xl'>Title</p>
+                                <input onChange={(e) => setDataItinerary({ ...dataItinerary, title: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="text" />
                             </div>
-                        </div>
-                        <div className='w-full min-h-[10vh]'>
-                            <div className='w-full flex items-center justify-between py-1'>
-                                <p className='font-semibold text-xl'>Activities</p>
-                                <button className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
-                            </div>
-                            {dataItinerary?.activities.length > 0 && <div className='w-full h-[10vh] flex items-center'>
+                            <div className='w-full flex flex-col gap-2 '>
+                                <p className='font-semibold text-xl'>Photo</p>
+                                <input onChange={(e) => getPhoto(e)} className='' type="file" />
+                                {dataItinerary?.photo !== undefined && <img className='w-2/6 h-[12vh]' src={dataItinerary.photo} alt="" />}
 
-                            </div>}
-                        </div>
-                    </div>
+                            </div>
+                            <div className='w-full flex flex-col gap-2'>
+                                <p className='font-semibold text-xl'>City</p>
+                                <select onChange={e => setDataItinerary({ ...dataItinerary, city: e.target.value })} name="" id="" className='w-3/6 border rounded-lg py-1 border-black'>
+                                    <option value="">Select City</option>
+                                    {cities?.map((city) => {
+                                        return <option value={city?.cityName}>{city?.cityName}</option>
+                                    })}
+                                </select>
+                            </div>
+                            <div className='w-full flex flex-col gap-2'>
+                                <p className='font-semibold text-xl'>Price</p>
+                                <div className='flex gap-2 items-center'>
+                                    <select onChange={(e) => { setPrice(e.target.value, 0) }} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
+                                        <option value="">Select Price</option>
+                                        <option value="1">$</option>
+                                        <option value="2">$$</option>
+                                        <option value="3">$$$</option>
+                                        <option value="4">$$$$</option>
+                                        <option value="4">$$$$$</option>
+                                    </select>
+                                    <p>-</p>
+                                    <select onChange={(e) => { setPrice(e.target.value, 1) }} className='w-2/6 border rounded-lg py-1 border-black' name="" id="">
+                                        <option value="">Select Price</option>
+                                        <option value="1">$</option>
+                                        <option value="2">$$</option>
+                                        <option value="3">$$$</option>
+                                        <option value="4">$$$$</option>
+                                        <option value="5">$$$$$</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='w-full flex flex-col gap-2'>
+                                <p className='font-semibold text-xl'>Duration</p>
+                                <input placeholder='min' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className='w-2/6 rounded-lg border px-2 py-1 border-black' type="number" />
+                            </div>
+                        </form>
                         <div className='w-full flex items-center justify-center mb-12'>
-                            <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => createItinerary()}>
-                                Create and Share!
+                            <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => nextStep()}>
+                                Continue
                             </button>
                         </div>
-                    </>}
+                    </>
+                    :
+                    activityAdd ?
+                        <div className='w-[35vw] animationMyItinerary relative h-screen bg-white flex flex-col items-center gap-5 px-8 rounded-l-2xl'>
+                            <div className='w-full h-[15vh] flex flex-col items-center justify-center border-b'>
+                                <h1 className='text-4xl font-semibold'>Activity</h1>
+                            </div>
+                            <div className='w-full h-full flex flex-col justify-start gap-12'>
+                                <div className='w-full flex flex-col gap-2 '>
+                                    <p className='font-semibold text-xl'>Name</p>
+                                    <input className='w-full py-1 rounded-lg border border-black px-2' type="text" />
+                                </div>
+
+                                <div className='w-full flex flex-col gap-2 '>
+                                    <p className='font-semibold text-xl'>Photo</p>
+                                    <input type="file" />
+                                </div>
+
+                                <div className='w-full flex flex-col gap-2 '>
+                                    <p className='font-semibold text-xl'>Description</p>
+                                    <input  className='w-full h-[15vh] py-1 rounded-lg border border-black px-2 text-left' type="text" />
+                                </div>
+                            </div>
+                            <div className='w-full flex items-center justify-center mb-12'>
+                                <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => addActivity()}>
+                                    Add activity
+                                </button>
+                            </div>
+                        </div>
+                        :
+                        <><div className='w-full h-5/6 flex flex-col justify-start gap-20'>
+                            <div className='w-full h-[10vh] flex flex-col gap-2 '>
+                                <p className='font-semibold text-xl'>Hashtag</p>
+                                {dataItinerary?.hashtag.length > 0 && <div className='w-full min-h-[4vh] flex flex-wrap gap-x-4 gap-y-2'>
+                                    {dataItinerary.hashtag.map((hash, index) => {
+                                        return <div className='flex items-center gap-2 border rounded-xl px-2 h-fit py-1'>
+                                            <p className='font-medium'>{hash}</p>
+                                            <button onClick={() => deleteHashtag(index)}><img className='w-2' src={closeBlack} alt="" /></button>
+                                        </div>
+                                    })}
+                                </div>}
+                                <div className='w-full rounded-lg flex items-center justify-between'>
+                                    <input ref={hashtagRef} className=' w-4/5 py-1 px-2 rounded-lg outline-none border border-black' maxLength={15} type="text" />
+                                    <button onClick={() => addHashtag()} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
+                                </div>
+                            </div>
+                            <div className='w-full min-h-[10vh]'>
+                                <div className='w-full flex items-center justify-between py-1'>
+                                    <p className='font-semibold text-xl'>Activities</p>
+                                    <button onClick={() => setActivityAdd(true)} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>new</p></button>
+                                </div>
+                                {dataItinerary?.activities.length > 0 ? <div className='w-full h-[10vh] flex items-center'>
+
+                                </div>
+                                    :
+                                    <div className='flex flex-col w-full h-[25vh] items-center py-2 rounded-lg'>
+                                        <img className='w-full h-full' src="" alt="" />
+                                        <p className='text-xl font-semibold'>There is no activies in this itinerary!</p>
+                                        <p className='text-lg font-semibold'>please insert almost 3</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                            <div className='w-full flex items-center justify-center mb-12'>
+                                <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => createItinerary()}>
+                                    Create and Share!
+                                </button>
+                            </div>
+                        </>}
 
 
             </div>
