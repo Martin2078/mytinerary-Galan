@@ -21,7 +21,6 @@ const Cities = () => {
   const [populars, setPopulars] = useState()
   const dispatch=useDispatch()
   const citiesStore=useSelector((store)=>store.citiesReducer)
-  console.log(citiesStore);
 
   function createPageButton(start, end) {
     let template = []
@@ -65,10 +64,6 @@ const Cities = () => {
     getCities()
     paginationCities()
   },[])
-
-  useEffect(()=>{
-
-  },[next,prev])
 
   useEffect(()=>{
     paginationCities()

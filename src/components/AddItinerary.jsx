@@ -3,27 +3,31 @@ import closeBlack from '../assets/closeBlack.png'
 import add from '../assets/add.png'
 import toast, { Toaster } from 'react-hot-toast'
 import axios from 'axios'
+import notActivities from '../assets/notActivities.jpg'
 import '../style.css'
+import { useSelector } from 'react-redux'
 
 
 const AddItinerary = ({ setCreateItinerary }) => {
-
+    const {token, user}=useSelector(store=>store.profileReducer)
     const [step, setStep] = useState(1)
     const [cities, setCities] = useState([])
     const [activityAdd, setActivityAdd] = useState(false)
-    const [activity,setActivity]=useState({
-        name:"",
-        description:"",
-        photo:undefined
+    const [activity, setActivity] = useState({
+        name: "",
+        description: "",
+        photo: [],
+        ubication: ""
     })
     const [dataItinerary, setDataItinerary] = useState({
         title: "",
         photo: undefined,
         price: [],
         duration: undefined,
-        hashtag: [],
+        hashtags: [],
         activities: [],
-        city: ""
+        cityId: "",
+        userId:user._id
     })
     const hashtagRef = useRef()
 
@@ -32,26 +36,45 @@ const AddItinerary = ({ setCreateItinerary }) => {
         setCities(response.data.response)
     }
     async function createItinerary() {
-        console.log(dataItinerary);
-        if (dataItinerary.hashtag.length < 1) {
+        if (dataItinerary.hashtags.length < 1) {
             toast.error("Please insert almost 3 hashtags!")
         }
-        if (dataItinerary.activities.length < 1) {
+        if (dataItinerary.activities.length < 3) {
             toast.error("Please insert 3 activities!")
             return
         }
+        let headers = { headers: { 'Authorization': `Bearer ${token}` } }
+        console.log(dataItinerary);
+        let response=await axios.post('http://localhost:8080/itineraries',dataItinerary,headers)
+        toast.success(response.data.message)
+        setTimeout(()=>{setCreateItinerary(false)},2000)
+        
     }
 
     function addActivity() {
-        if (activity.name=="") {
+        console.log(activity);
+        if (activity.name == "") {
             toast.error("Please insert activity name!")
         }
-        if (activity.description=="") {
-            toast.error("Please insert description!")
+        if (activity.description == "") {
+            toast.error("Please insert activity description!")
         }
-        if (activity.photo==undefined) {
+        if (activity.photo == undefined) {
             toast.error("Please insert activity photo!")
         }
+        if (activity.ubication == "") {
+            toast.error("Please insert activity ubication!")
+            return
+        }
+
+        setDataItinerary({ ...dataItinerary, activities: [...dataItinerary.activities, activity] })
+        setActivity({
+            name: "",
+            description: "",
+            photo: undefined,
+            ubication: ''
+        })
+        setActivityAdd(false)
     }
     function nextStep() {
         if (dataItinerary.title == "") {
@@ -60,7 +83,7 @@ const AddItinerary = ({ setCreateItinerary }) => {
         if (dataItinerary.photo == undefined) {
             toast.error("Please insert photo!")
         }
-        if (dataItinerary.city == "") {
+        if (dataItinerary.cityId == "") {
             toast.error("Please select city!")
         }
         if (dataItinerary.price.length < 1) {
@@ -71,20 +94,19 @@ const AddItinerary = ({ setCreateItinerary }) => {
             return
         }
         setStep(2)
-
     }
 
 
     function addHashtag() {
         let hashtagName = hashtagRef.current.value.replaceAll(" ", "")
 
-        if (dataItinerary.hashtag.length < 8) {
+        if (dataItinerary.hashtags.length < 8) {
             let startWith = hashtagName.slice(0, 1)
             if (startWith !== "#") {
                 hashtagName = "#" + hashtagName
             }
             if (hashtagRef.current.value.length >= 3) {
-                setDataItinerary({ ...dataItinerary, hashtag: [...dataItinerary.hashtag, hashtagName] })
+                setDataItinerary({ ...dataItinerary, hashtags: [...dataItinerary.hashtags, hashtagName] })
                 hashtagRef.current.value = ""
             } else {
                 toast.error("Please insert text on Hashtag!")
@@ -96,9 +118,18 @@ const AddItinerary = ({ setCreateItinerary }) => {
 
     function deleteHashtag(indexHash) {
         setDataItinerary({
-            ...dataItinerary, hashtag: [...dataItinerary.hashtag.filter((hash, index) => {
+            ...dataItinerary, hashtags: [...dataItinerary.hashtags.filter((hash, index) => {
                 if (index !== indexHash) {
                     return hash
+                }
+            })]
+        })
+    }
+    function deleteActivity(indexActivity) {
+        setDataItinerary({
+            ...dataItinerary, activities: [...dataItinerary.activities.filter((act, index) => {
+                if (index !== indexActivity) {
+                    return act
                 }
             })]
         })
@@ -131,23 +162,23 @@ const AddItinerary = ({ setCreateItinerary }) => {
                 </div>
                 {step == 1 ?
                     <>
-                        <form className='w-full h-5/6 flex flex-col justify-start gap-10'>
+                        <div className='w-full h-5/6 flex flex-col justify-start gap-10'>
                             <div className='w-full flex flex-col gap-2'>
                                 <p className='font-semibold text-xl'>Title</p>
                                 <input onChange={(e) => setDataItinerary({ ...dataItinerary, title: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="text" />
                             </div>
                             <div className='w-full flex flex-col gap-2 '>
                                 <p className='font-semibold text-xl'>Photo</p>
-                                <input onChange={(e) => getPhoto(e)} className='' type="file" />
-                                {dataItinerary?.photo !== undefined && <img className='w-2/6 h-[12vh]' src={dataItinerary.photo} alt="" />}
+                                <input onChange={(e) => setDataItinerary({ ...dataItinerary, photo: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="url" />
+                                {dataItinerary?.photo !== undefined && <img className='w-2/6 h-[12vh] rounded-xl' src={dataItinerary.photo} alt="" />}
 
                             </div>
                             <div className='w-full flex flex-col gap-2'>
                                 <p className='font-semibold text-xl'>City</p>
-                                <select onChange={e => setDataItinerary({ ...dataItinerary, city: e.target.value })} name="" id="" className='w-3/6 border rounded-lg py-1 border-black'>
+                                <select onChange={e => setDataItinerary({ ...dataItinerary, cityId: e.target.value })} name="" id="" className='w-3/6 border rounded-lg py-1 border-black'>
                                     <option value="">Select City</option>
                                     {cities?.map((city) => {
-                                        return <option value={city?.cityName}>{city?.cityName}</option>
+                                        return <option value={city?._id}>{city?.cityName}</option>
                                     })}
                                 </select>
                             </div>
@@ -175,9 +206,9 @@ const AddItinerary = ({ setCreateItinerary }) => {
                             </div>
                             <div className='w-full flex flex-col gap-2'>
                                 <p className='font-semibold text-xl'>Duration</p>
-                                <input placeholder='min' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className='w-2/6 rounded-lg border px-2 py-1 border-black' type="number" />
+                                <input placeholder='minutes' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className='w-2/6 rounded-lg border px-2 py-1 border-black' type="number" />
                             </div>
-                        </form>
+                        </div>
                         <div className='w-full flex items-center justify-center mb-12'>
                             <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => nextStep()}>
                                 Continue
@@ -193,31 +224,39 @@ const AddItinerary = ({ setCreateItinerary }) => {
                             <div className='w-full h-full flex flex-col justify-start gap-12'>
                                 <div className='w-full flex flex-col gap-2 '>
                                     <p className='font-semibold text-xl'>Name</p>
-                                    <input className='w-full py-1 rounded-lg border border-black px-2' type="text" />
+                                    <input onChange={(e) => setActivity({ ...activity, name: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2' type="text" />
                                 </div>
 
                                 <div className='w-full flex flex-col gap-2 '>
                                     <p className='font-semibold text-xl'>Photo</p>
-                                    <input type="file" />
+                                    <input className='w-full py-1 rounded-lg border border-black px-2' type="url" onChange={(e) => setActivity({ ...activity, photo: e.target.value })} />
                                 </div>
 
                                 <div className='w-full flex flex-col gap-2 '>
                                     <p className='font-semibold text-xl'>Description</p>
-                                    <input  className='w-full h-[15vh] py-1 rounded-lg border border-black px-2 text-left' type="text" />
+                                    <input onChange={(e) => setActivity({ ...activity, description: e.target.value })} className='w-full h-[15vh] py-1 rounded-lg border border-black px-2 text-left' type="text" />
+                                </div>
+
+                                <div className='w-full flex flex-col gap-2 '>
+                                    <p className='font-semibold text-xl'>Ubication</p>
+                                    <input onChange={(e) => setActivity({ ...activity, ubication: e.target.value })} className='w-full py-1 rounded-lg border border-black px-2 text-left' type="text" />
                                 </div>
                             </div>
-                            <div className='w-full flex items-center justify-center mb-12'>
+                            <div className='w-full flex items-center justify-center mb-12 gap-4'>
+                                <button className='cursor-pointer px-10 py-2 bg-[#b92525] rounded-xl text-xl font-semibold text-white' onClick={() => {setActivity({name: "",description: "",photo: [],ubication: ""});setActivityAdd(false)}}>
+                                    Cancel
+                                </button>
                                 <button className='cursor-pointer px-10 py-2 bg-[#2dc77f] rounded-xl text-xl font-semibold text-white' onClick={() => addActivity()}>
                                     Add activity
                                 </button>
                             </div>
                         </div>
                         :
-                        <><div className='w-full h-5/6 flex flex-col justify-start gap-20'>
-                            <div className='w-full h-[10vh] flex flex-col gap-2 '>
-                                <p className='font-semibold text-xl'>Hashtag</p>
-                                {dataItinerary?.hashtag.length > 0 && <div className='w-full min-h-[4vh] flex flex-wrap gap-x-4 gap-y-2'>
-                                    {dataItinerary.hashtag.map((hash, index) => {
+                        <><div className='w-full h-5/6 flex flex-col justify-start gap-12'>
+                            <div className='w-full min-h-[10vh] flex flex-col gap-2 '>
+                                <p className='font-semibold text-xl'>Hashtags</p>
+                                {dataItinerary?.hashtags.length > 0 && <div className='w-full min-h-[4vh] flex flex-wrap gap-x-4 gap-y-2'>
+                                    {dataItinerary.hashtags.map((hash, index) => {
                                         return <div className='flex items-center gap-2 border rounded-xl px-2 h-fit py-1'>
                                             <p className='font-medium'>{hash}</p>
                                             <button onClick={() => deleteHashtag(index)}><img className='w-2' src={closeBlack} alt="" /></button>
@@ -229,18 +268,28 @@ const AddItinerary = ({ setCreateItinerary }) => {
                                     <button onClick={() => addHashtag()} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
                                 </div>
                             </div>
-                            <div className='w-full min-h-[10vh]'>
+                            <div className='w-full max-h-[45vh] flex flex-col gap-4'>
                                 <div className='w-full flex items-center justify-between py-1'>
                                     <p className='font-semibold text-xl'>Activities</p>
                                     <button onClick={() => setActivityAdd(true)} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>new</p></button>
                                 </div>
-                                {dataItinerary?.activities.length > 0 ? <div className='w-full h-[10vh] flex items-center'>
+                                {dataItinerary?.activities.length > 0 ?
+                                    <div className='overflow-y-auto h-full w-full flex flex-col gap-2 px-4'>
+                                        {dataItinerary.activities.map((acti, index) => {
+                                            return <div className='w-full h-[10vh] border flex items-start relative rounded-xl'>
+                                                <img className='w-1/2 h-full object-cover rounded-xl' src={acti.photo} alt="" />
+                                                <div className='w-1/2  h-full px-2 py-1 overflow-hidden'>
+                                                 <p className='font-semibold text-lg'>{acti.name.slice(0,30)}</p>
+                                                </div>
+                                                <button onClick={() => deleteActivity(index)}><img className='w-2 absolute top-2 right-2' src={closeBlack} alt="" /></button>
+                                            </div>
+                                        })}
+                                    </div>
 
-                                </div>
                                     :
-                                    <div className='flex flex-col w-full h-[25vh] items-center py-2 rounded-lg'>
-                                        <img className='w-full h-full' src="" alt="" />
-                                        <p className='text-xl font-semibold'>There is no activies in this itinerary!</p>
+                                    <div className='flex flex-col w-full h-[35vh] items-center rounded-lg'>
+                                        <img className='w-full h-4/6 object-cover rounded-lg' src={notActivities} alt="" />
+                                        <p className='text-xl font-semibold'>There is no activies on this itinerary!</p>
                                         <p className='text-lg font-semibold'>please insert almost 3</p>
                                     </div>
                                 }

@@ -8,6 +8,8 @@ import ItineraryCard from '../components/ItineraryCard'
 import add from '../assets/add.png'
 import notItineraries from '../assets/notItineraries.jpg'
 import AddItinerary from '../components/AddItinerary'
+import { useNavigate } from 'react-router-dom'
+
 
 const MyTineraries = () => {
   const { token, user } = useSelector((store) => store.profileReducer)
@@ -15,6 +17,7 @@ const MyTineraries = () => {
   const [myTineraries, setMyTineraries] = useState()
   const uniques = new Set()
   const [createItinerary,setCreateItinerary]=useState(false)
+  const navigate=useNavigate()
 
 
   async function getUserItineraries() {
@@ -55,6 +58,9 @@ const MyTineraries = () => {
   };
 
   useEffect(() => {
+    if (!token || token.length<1) {
+      navigate('/SignIn')
+    }
     getUserItineraries()
   }, [])
 

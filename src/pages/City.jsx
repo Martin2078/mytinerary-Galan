@@ -6,8 +6,8 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useState } from 'react'
 import noItineraries from '../assets/noItineraries.png'
-import notFavorite from '../assets/notFavorite.png'
-import favorite from '../assets/favorite.png'
+import CityItinerary from '../components/CityItinerary'
+import ItineraryDetail from '../components/ItineraryDetail'
 
 const City = () => {
   const { id } = useParams()
@@ -17,6 +17,8 @@ const City = () => {
   const [view, setView] = useState(false)
   const topScroll = useRef(null)
   const itinerariesScroll = useRef(null)
+  const [cityDetail,setCityDetails]=useState(false)
+  const [dataItinerary,setDataItinerary]=useState()
 
   async function getCity() {
     let response = await axios.get(`http://localhost:8080/cities/${id}`)
@@ -43,6 +45,7 @@ const City = () => {
   }
   return (
     <div className='w-full min-h-[200vh]'>
+      {cityDetail && <ItineraryDetail dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
       <button onClick={() => scrollToItineraries()} className='px-2 py-2 rounded-xl absolute bg-[#2dc77f] right-10 bottom-5 flex items-center gap-2'>
         <p className='text-white text-lg font-semibold'>Itineraries</p>
         <img src={itinerarysArrow} alt="" />
@@ -83,27 +86,7 @@ const City = () => {
           <h2 className='text-4xl font-semibold'>Itineraries</h2>
         </div>
           {itineraries.map((itinerary) => {
-            return <div className='w-[30vw] h-[40vh] shadow-md rounded-lg  cursor-pointer hover:opacity-90'>
-              <img className='w-full h-[28vh] object-cover rounded-lg' src={itinerary?.photo} alt="" />
-              <div className='w-full h-[12vh] flex flex-col justify-between relative px-3 py-2'>
-              <button className='absolute top-4 right-4 hover:scale-105'><img className='w-5' src={notFavorite} alt="" /></button>
-
-                <h4 className='text-xl font-bold'>{itinerary?.title}</h4>
-                {itinerary?.price.map((bill, index) => {
-                  const template = []
-                  for (let i = 0; i < bill; i++) {
-                    template.push("$")
-                  }
-                  if (index == 0) {
-                    template.push("-")
-                  }
-                  return template
-                })}
-                <p className=''>{itinerary?.hashtags.map((hashtag) => {
-                  return `${hashtag} `
-                })}</p>
-              </div>
-            </div>
+            return <CityItinerary setDataItinerary={setDataItinerary} setCityDetails={setCityDetails} itinerary={itinerary}/>
           })}</>
           : <div className='w-6/12 h-[50vh] rounded-xl border shadow-md flex flex-col items-center justify-around'>
             <p className='text-3xl font-semibold'>There is no itineraries yet!</p>

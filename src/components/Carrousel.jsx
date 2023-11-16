@@ -3,7 +3,7 @@ import arrow from '../assets/arrow.png'
 import carrouselButton from '../assets/carrouselButton.png'
 import carrouselButtonBlue from '../assets/carrouselButtonBlue.png'
 import '../style.css'
-const Carrousel = ({ data, classes }) => {
+const Carrousel = ({ data, classes, buttonsClasses }) => {
 
   const [position, setPosition] = useState(0)
   const [timeoutId, setTimeoutId] = useState(null);
@@ -56,7 +56,7 @@ const Carrousel = ({ data, classes }) => {
   },[position])
   return (
     <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} className={`${classes}`} style={{backgroundImage:`url(${data[position]})`,backgroundRepeat:'no-repeat',backgroundSize:'cover',backgroundPosition:'center'}}>
-      <div className='py-2 absolute z-50 flex bottom-[10%] lg:bottom-[5%] left-[35%] md:left-[41%] lg:left-[45%] w-[30vw] md:w-[20vw] lg:w-[10vw]  items-center justify-evenly Glassmorphism'>
+      <div className={`py-2 absolute z-50 flex bottom-[10%] lg:bottom-[5%] left-[35%] md:left-[41%] lg:left-[45%] w-[30vw] md:w-[20vw] lg:w-[10vw]  items-center justify-evenly Glassmorphism ${buttonsClasses}`}>
         {data.map((photo,index)=>{
            return <button key={index} className='z-10' onClick={()=>{setPosition(index)}}><img className='w-3' src={index==position?carrouselButtonBlue:carrouselButton} alt="" /></button>
         })}
