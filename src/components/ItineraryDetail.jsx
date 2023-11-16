@@ -3,6 +3,7 @@ import Carrousel from './Carrousel.jsx'
 import notFavorite from '../assets/notFavorite.png'
 import notComments from '../assets/notComments.png'
 import Description from './Description.jsx'
+import { Link } from 'react-router-dom'
 
 const ItineraryDetail = ({ dataItinerary, setCityDetails }) => {
 
@@ -23,7 +24,7 @@ const ItineraryDetail = ({ dataItinerary, setCityDetails }) => {
                         </div>
                         <div className='w-full flex items-center gap-2'>
                             <p className='font-semibold text-xl'>Price:</p>
-                            <p>{dataItinerary?.price.map((bill, index) => {
+                            <p className='text-lg'>{dataItinerary?.price.map((bill, index) => {
                                 const template = []
                                 for (let i = 0; i < bill; i++) {
                                     template.push("$")
@@ -34,8 +35,8 @@ const ItineraryDetail = ({ dataItinerary, setCityDetails }) => {
                                 return template
                             })}</p>
                         </div>
-                        <div className='w-full flex items-center gap-2'>
-                            <p className='font-semibold text-xl'>Duration:</p>
+                        <div className='w-full flex items-end gap-2'>
+                            <p className='font-semibold text-xl'>Aproximated duration:</p>
                             <p>{dataItinerary.duration} minutes</p>
                         </div>
                         <p>{dataItinerary.hashtags.map((hash) => {
@@ -60,6 +61,7 @@ const ItineraryDetail = ({ dataItinerary, setCityDetails }) => {
 
                 <div className='w-full px-5 py-5 flex flex-col gap-5'>
                     <h2 className='font-semibold text-2xl'>Comments</h2>
+                    <Link to={`/CommentForm/${dataItinerary._id}`}><button className='border w-fit rounded-xl bg-[#2dc77f]'><p className='text-white text-lg font-semibold px-3 py-1'>Write a opinion</p></button></Link>
                     {dataItinerary.comments.length<1
                     ?
                     <div className='w-full h-[25vh] flex flex-col items-center py-2 px-2'>
@@ -72,9 +74,7 @@ const ItineraryDetail = ({ dataItinerary, setCityDetails }) => {
                         
                     </div>
                     }
-                    
-                    <input placeholder='Write a message' className='w-full border border-black rounded-xl px-2 py-2' type="text" />
-                    
+                                        
                 </div>
 
 

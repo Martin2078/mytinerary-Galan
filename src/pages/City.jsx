@@ -28,7 +28,6 @@ const City = () => {
   async function getItineraries() {
     let response = await axios.get(`http://localhost:8080/itineraries/${id}`)
     setItineraries(response.data.response)
-    console.log(response.data.response);
   }
 
   useEffect(() => {

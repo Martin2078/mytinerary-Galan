@@ -6,6 +6,7 @@ import SignIn from '../pages/SignIn'
 import Register from '../pages/Register'
 import City from "../pages/City";
 import MyTineraries from "../pages/MyTineraries";
+import CommentForm from "../pages/CommentForm";
 const router=createBrowserRouter([
     {
         path:'/',
@@ -34,6 +35,10 @@ const router=createBrowserRouter([
             {
                 path:'/MyTineraries',
                 element:<MyTineraries/>
+            },
+            {
+                path:'/CommentForm/:id',
+                element:<CommentForm/>
             },
             
         ]
