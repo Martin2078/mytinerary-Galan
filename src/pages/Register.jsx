@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import signInBackground from '../assets/signInBackground2.jpg'
 import google from '../assets/google.png'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -53,6 +52,12 @@ const Register = () => {
     }
    
   }
+
+  useEffect(()=>{
+    if (localStorage.getItem('token')) {
+      navigate('/')
+    }
+  },[])
 
   useEffect(()=>{
     

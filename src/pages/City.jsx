@@ -8,9 +8,11 @@ import { useState } from 'react'
 import noItineraries from '../assets/noItineraries.png'
 import CityItinerary from '../components/CityItinerary'
 import ItineraryDetail from '../components/ItineraryDetail'
+import { useSelector } from 'react-redux'
 
 const City = () => {
   const { id } = useParams()
+  const { token, user }=useSelector((store)=>store.profileReducer)
   const [infoCity, setInfoCity] = useState()
   const [itineraries, setItineraries] = useState()
   const [data, setData] = useState()
@@ -44,7 +46,7 @@ const City = () => {
   }
   return (
     <div className='w-full min-h-[200vh]'>
-      {cityDetail && <ItineraryDetail dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
+      {cityDetail && <ItineraryDetail token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
       <button onClick={() => scrollToItineraries()} className='px-2 py-2 rounded-xl absolute bg-[#2dc77f] right-10 bottom-5 flex items-center gap-2'>
         <p className='text-white text-lg font-semibold'>Itineraries</p>
         <img src={itinerarysArrow} alt="" />

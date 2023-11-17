@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import notPhotos from '../assets/notPhotos.png'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 const CommentForm = () => {
   const { token, user } = useSelector((store) => store.profileReducer)
   const { id } = useParams()
+  const navigate=useNavigate()
   const [commentError, setCommentError] = useState({
     title: false,
     text: false,
@@ -59,7 +61,13 @@ const CommentForm = () => {
       return
     }
     setCommentData({ ...commentData, userId: user._id })
-
+    console.log(commentData);
+    let headers = { headers: { 'Authorization': `Bearer ${token}` } }
+    let response = await axios.post('http://localhost:8080/comments',commentData,headers)
+    toast.success(response.data.message)
+    setTimeout(() => {
+      navigate(`/Cities/${id}`)
+    }, 2000);
   }
 
   async function getItinerary() {
@@ -71,6 +79,9 @@ const CommentForm = () => {
 
   }, [commentError])
   useEffect(() => {
+    if (!token || !token.length>0) {
+      navigate('/SignIn')
+    }
     getItinerary()
   }, [])
 
@@ -124,7 +135,7 @@ const CommentForm = () => {
             <textarea onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
             <div className='w-8/12 flex justify-between'>
               <p className={`text-sm text-red-600 opacity-0 ${commentError.text && "opacity-100"}`}>* Must have almost 100 characters</p>
-              <p className='font-light text-sm'>0 of 100 characters minimum</p>
+              <p className='font-light text-sm'>{commentData.text.length} of 100 characters minimum</p>
             </div>
           </fieldset>
 

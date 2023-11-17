@@ -58,8 +58,6 @@ const Header = () => {
         }
         dispatch(profile(objeto))
       }
-    } else {
-      navigate('/')
     }
   }, [token])
 

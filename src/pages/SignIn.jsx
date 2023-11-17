@@ -26,9 +26,7 @@ const SignIn = () => {
   async function getEmail() {
     setMail(mail.toLowerCase())
     const email = mail.toLowerCase()
-    console.log(email);
     const finded = await axios.get(`http://localhost:8080/auth?email=${email}`)
-    console.log(finded.data);
     if (finded.data.error) {
       toast.error(finded.data.error)
     } else {
@@ -51,10 +49,18 @@ const SignIn = () => {
         localStorage.setItem("token", response.data.response.token)
         localStorage.setItem("user", JSON.stringify(response.data.response.userFinded))
         dispatch(profile(response.data.response))
+        navigate('/')
       }, 2000)
 
     }
   }
+
+  useEffect(()=>{
+    if (localStorage.getItem('token')) {
+      navigate('/')
+    }
+  },[])
+
   return (
     <div className='w-screen h-screen flex items-center justify-between'>
       <Toaster position='top-center' />
