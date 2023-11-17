@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 const CommentForm = () => {
-  const { token,user }=useSelector((store)=>store.profileReducer)
+  const { token, user } = useSelector((store) => store.profileReducer)
   const { id } = useParams()
-  const [commentError,setCommentError]=useState({
+  const [commentError, setCommentError] = useState({
     title: false,
     text: false,
     valoration: false,
@@ -38,36 +38,28 @@ const CommentForm = () => {
     text: "",
     photo: [],
     valoration: {
-      value:undefined,
-      textValue:undefined},
+      value: undefined,
+      textValue: undefined
+    },
     itineraryId: id,
-    userId:undefined
+    userId: undefined
   })
   const [rating, setRating] = useState()
 
   async function createComment(e) {
     e.preventDefault()
-    if (commentData.valoration.value==undefined) {
-      console.log("no hay");
+
+    setCommentError({
+      title: commentData.title === "" ? commentError.title=true : commentError.title=false,
+      text: commentData.text === "" || commentData.text.length<100 ? commentError.text=true : commentError.text=false,
+      valoration: commentData.valoration.value === undefined ? commentError.valoration=true : commentError.valoration=false
+    });           
+
+    if (commentError.text==true || commentError.title==true || commentError.valoration==true) {
+      return
     }
-    if (commentData.title=="") {
-      setCommentError({...commentError,title:true})
-    }else{
-      setCommentError({...commentError,title:false})
-    }
-    if (commentData.text=="") {
-      setCommentError({...commentError,text:true})
-    }else{
-      setCommentError({...commentError,text:false})
-    }
-    console.log(commentError);
-    console.log(commentData);
-    let esdad=commentError.filter((key)=>{if (key==true) {
-      return key
-    }})
-    console.log(esdad);
-    setCommentData({...commentData,userId:user._id})
-    
+    setCommentData({ ...commentData, userId: user._id })
+
   }
 
   async function getItinerary() {
@@ -103,32 +95,35 @@ const CommentForm = () => {
       </div>
 
       <div className='w-8/12 h-full overflow-y-auto pt-[10vh]'>
-        <form onSubmit={(e)=>createComment(e)} className='flex flex-col gap-6' action="">
+        <form onSubmit={(e) => createComment(e)} className='flex flex-col gap-6' action="">
 
-        <div className='w-8/12 flex flex-col gap-4'>
+          <div className='w-8/12 flex flex-col gap-4'>
             <p className='font-semibold text-xl'>Value your experience</p>
             <div className='flex items-center w-8/12'>
               <div className='flex gap-2 w-4/6 '>
                 {valoration.map((val, index) => {
-                  return <span onClick={() => setCommentData({...commentData,valoration:{value:val.value,textValue:val.textValue}})} className={`w-10 h-10 rounded-full border border-black ${val.value <= commentData.valoration.value ? "bg-[#2dc77f]" : "bg-[white]"} hover:bg-[#2dc77f]`}></span>
+                  return <span onClick={() => setCommentData({ ...commentData, valoration: { value: val.value, textValue: val.textValue } })} className={`w-10 h-10 rounded-full border border-black ${val.value <= commentData.valoration.value ? "bg-[#2dc77f]" : "bg-[white]"} hover:bg-[#2dc77f]`}></span>
                 })}
               </div>
               <p className='font-semibold'>{commentData.valoration.value == undefined ? "" : commentData?.valoration.textValue}</p>
             </div>
+            <p className={`text-sm text-red-600 opacity-0 ${commentError.valoration && "opacity-100"}`}>* Obligatory field</p>
           </div>
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Title</label>
-            <input onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title&&"border-red-600"} w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
-            <div className='w-8/12 flex justify-end'>
-              <p className='font-light text-sm'>0 of 80 characters maximum</p>
+            <input onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title && "border-red-600"} w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
+            <div className='w-8/12 flex justify-between'>
+              <p className={`text-sm text-red-600 opacity-0 ${commentError.title && "opacity-100"}`}>* Obligatory field</p>
+              <p className='font-light text-sm'>{commentData.title.length} of 80 characters maximum</p>
             </div>
           </fieldset>
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Message</label>
-            <textarea onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text&&"border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
-            <div className='w-8/12 flex justify-end'>
+            <textarea onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
+            <div className='w-8/12 flex justify-between'>
+              <p className={`text-sm text-red-600 opacity-0 ${commentError.text && "opacity-100"}`}>* Must have almost 100 characters</p>
               <p className='font-light text-sm'>0 of 100 characters minimum</p>
             </div>
           </fieldset>
@@ -148,9 +143,9 @@ const CommentForm = () => {
           </div>
 
           <div className='w-8/12 h-[10vh] flex items-center justify-start px-2 '>
-              <button className='bg-[#2dc77f] rounded-lg w-1/3 hover:scale-105'><p className='text-xl px-2 py-1  text-white font-semibold'>Comment</p></button>
+            <button className='bg-[#2dc77f] rounded-lg w-1/3 hover:scale-105'><p className='text-xl px-2 py-1  text-white font-semibold'>Comment</p></button>
           </div>
-          
+
 
         </form>
       </div>
