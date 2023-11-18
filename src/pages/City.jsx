@@ -30,6 +30,7 @@ const City = () => {
   async function getItineraries() {
     let response = await axios.get(`http://localhost:8080/itineraries/${id}`)
     setItineraries(response.data.response)
+    console.log(response.data.response);
   }
 
   useEffect(() => {
@@ -45,8 +46,7 @@ const City = () => {
     itinerariesScroll.current.scrollIntoView({ behavior: 'smooth' })
   }
   return (
-    <div className='w-full min-h-[200vh]'>
-      {cityDetail && <ItineraryDetail token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
+    <div className='w-full h-[200vh] overflow-hidden'>
       <button onClick={() => scrollToItineraries()} className='px-2 py-2 rounded-xl absolute bg-[#2dc77f] right-10 bottom-5 flex items-center gap-2'>
         <p className='text-white text-lg font-semibold'>Itineraries</p>
         <img src={itinerarysArrow} alt="" />
@@ -81,7 +81,7 @@ const City = () => {
         </div>
       </div>
       <div ref={itinerariesScroll} className='w-full min-h-[100vh] flex flex-wrap items-center justify-center gap-x-10'>
-
+      {cityDetail && <ItineraryDetail token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
         {itineraries?.length > 0 ?<>
         <div className='w-full h-[10vh] px-10'>
           <h2 className='text-4xl font-semibold'>Itineraries</h2>
