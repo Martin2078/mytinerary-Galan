@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Description from './Description';
 import like from '../assets/like.png'
 import dislike from '../assets/dislike.png'
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast'
+import liked from '../assets/liked.png'
+import disliked from '../assets/disliked.png'
 const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
 
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-
+    const [success,setSuccess]=useState(false)
     function valorationCircles() {
         let template = []
         for (let i = 0; i < 5; i++) {
@@ -26,7 +28,9 @@ const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
             userId: user._id
         }
         let response = await axios.put(`http://localhost:8080/comments/like`, object, headers)
-        console.log(response);
+        if (response.data.success==true) {
+            setSuccess(true)
+        }
 
     }
     async function dislikeComment() {
@@ -41,9 +45,14 @@ const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
             userId: user._id
         }
         let response = await axios.put(`http://localhost:8080/comments/dislike`, object, headers)
-        console.log(response);
+        if (response.data.success==true) {
+            setSuccess(true)
+        }
     }
 
+    useEffect(()=>{
+        
+    },[success])
     return (
         <div className='w-full min-h-[20vh] border-t flex flex-col py-2'>
             <Toaster position='top-center' />
@@ -64,11 +73,11 @@ const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
             </div>}
             <div className='w-full h-[4vh] flex gap-5 items-end'>
                 <div className='flex items-center gap-2'>
-                    <button onClick={() => likeComment()}><img className='w-4' src={like} alt="" /></button>
+                    <button onClick={() => likeComment()}><img className='w-4' src={comment.likes.find(id=>id==user?._id)?liked:like} alt="" /></button>
                     <p>{comment.likes.length}</p>
                 </div>
                 <div className='flex items-center gap-2'>
-                    <button onClick={() => dislikeComment()}><img className='w-4' src={dislike} alt="" /></button>
+                    <button onClick={() => dislikeComment()}><img className='w-4' src={comment.dislikes.find(id=>id==user?._id)?disliked:dislike} alt="" /></button>
                     <p>{comment.dislikes.length}</p>
                 </div>
             </div>
