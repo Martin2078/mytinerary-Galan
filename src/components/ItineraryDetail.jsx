@@ -140,14 +140,14 @@ const ItineraryDetail = ({ token, user, dataItinerary, setCityDetails }) => {
                         <div className='w-full flex flex-col gap-2'>
                             {user == null ?
                                 dataItinerary.comments?.map((comment) => {
-                                    return <CommentNotAuthor comment={comment} setLogged={setLogged} user={user} />
+                                    return <CommentNotAuthor comment={comment} setLogged={setLogged} user={user} token={token} />
                                 })
                                 :
                                 dataItinerary.comments?.map((comment) => {
                                     if (comment.userId._id == user._id) {
                                         return <CommentAuthor />
                                     }
-                                    return <CommentNotAuthor />
+                                    return <CommentNotAuthor comment={comment} setLogged={setLogged} user={user} token={token} />
                                 })}
                         </div>
                     }
