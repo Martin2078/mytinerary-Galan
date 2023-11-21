@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import searchIcon from '../assets/search-icon.png'
 import { Link } from 'react-router-dom'
 import ubication from '../assets/ubication.png'
@@ -8,19 +8,36 @@ import Carrousel from '../components/Carrousel'
 import '../style.css'
 import { useDispatch, useSelector } from 'react-redux'
 import citiesAction from '../redux/actions/citiesAction'
-import axios from 'axios'
+import filterCities from '../redux/actions/filterAction'
+
 
 const Cities = () => {
-  const [text, setText] = useState("")
+  const text=useRef()
   const [page, setPage] = useState(1)
   const [next, setNext] = useState(false)
   const [prev, setPrev] = useState(false)
   const [maxPages, setMaxPages] = useState()
   const [cities, setCities] = useState([])
-  const [citiesData, setCitiesData] = useState([])
   const [populars, setPopulars] = useState()
   const dispatch=useDispatch()
+  const [citiesData, setCitiesData] = useState([])
   const citiesStore=useSelector((store)=>store.citiesReducer)
+  const filterStore=useSelector((store)=>store.filterReducer)
+  console.log(filterStore);
+  console.log(citiesStore);
+  
+
+  function textFilter(e) {
+    let textValue= e.target.value.toLowerCase().replaceAll(" ","")
+    if (textValue=="") {
+      dispatch(filterCities(citiesStore.cities))
+      paginationCities()
+      return
+    }
+    let finded=citiesData.filter(city=>city.cityName.toLowerCase().includes(textValue))
+    dispatch(filterCities(finded))
+    paginationCities()
+ }
 
   function createPageButton(start, end) {
     let template = []
@@ -30,44 +47,52 @@ const Cities = () => {
       )
 
     }
-
     return template
   }
 
-  async function getCities() {
-    let response= await axios.get('http://localhost:8080/cities')
-    setCitiesData(response.data.response)
-    if (populars == undefined ) {
-      setPopulars([response.data.response[0].photo[0], response.data.response[1].photo[0], response.data.response[2].photo[0], response.data.response[3].photo[0]])
-    }
-    dispatch(citiesAction(response.data.response))
-  }
 
   function paginationCities() {
-    setMaxPages(Math.ceil(citiesData.length/12))
-    let lastIndex=page*12
-    setCities(citiesData.slice(lastIndex-12,lastIndex))
-    if (page<maxPages) {
-      setNext(true)
-    }else{
-      setNext(false)
-    }
-    if (page>1) {
-      setPrev(true)
-    }else{
-      setPrev(false)
+    if (citiesStore.cities!==null) {
+      let maxPage=Math.ceil(filterStore.cities.length/12)
+      setMaxPages(maxPage)
+      let lastIndex=page*12
+      setCities(filterStore.cities.slice(lastIndex-12,lastIndex))
+      if (page<maxPage) {
+        setNext(true)
+      }else{
+        setNext(false)
+      }
+      if (page>1) {
+        setPrev(true)
+      }else{
+        setPrev(false)
+      }
     }
     
   }
 
   useEffect(()=>{
-    getCities()
-    paginationCities()
-  },[])
+    if (citiesStore.cities!==null) {
+      if (citiesData.length<1) { 
+        setCitiesData(citiesStore.cities)
+      }
+      if (populars == undefined ) {
+        setPopulars([citiesStore.cities[0].photo[0], citiesStore.cities[1].photo[0], citiesStore.cities[2].photo[0], citiesStore.cities[3].photo[0]])
+      }
+      
+    }else{
+      dispatch(citiesAction())
+    }
+  },[citiesData,citiesStore])
 
-  useEffect(()=>{
-    paginationCities()
-  },[page,citiesStore])
+    useEffect(()=>{
+      paginationCities()
+    },[page,filterStore])
+
+    
+    
+    
+
 
 
   return (
@@ -88,7 +113,7 @@ const Cities = () => {
       <div className='w-full h-full flex flex-col items-center mt-[2vh] '>
 
         <div className='flex items-center justify-center w-10/12 lg:w-4/12 h-[4vh] rounded border px-4 py-1 checked:border-2'>
-          <input onChange={(e) => { setText(e.target.value); setPage(1) }} className='w-full h-full outline-none' type="text" placeholder='Search city' />
+          <input onChange={(e)=> textFilter(e)} defaultValue={""}  className='w-full h-full outline-none' type="text" placeholder='Search city' />
           <img className='h-full' src={searchIcon} alt="" />
         </div>
 
@@ -129,7 +154,7 @@ const Cities = () => {
               <div className=' h-full '>
                 <img className='w-full h-full' src={notFinded} alt="" />
               </div>
-              <p className='text-xl text-center'>Sorry, there is no city or country with that name!</p>
+              <p className='text-xl text-center'>Sorry, there is no city with that name!</p>
             </div>
           }
 
