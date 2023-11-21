@@ -145,9 +145,9 @@ const ItineraryDetail = ({ token, user, dataItinerary, setCityDetails }) => {
                                 :
                                 dataItinerary.comments?.map((comment) => {
                                     if (comment.userId._id == user._id) {
-                                        return <CommentAuthor comment={comment} user={user} token={token} />
+                                        return <CommentAuthor comment={comment} setRender={setRender} user={user} token={token} />
                                     }
-                                    return <CommentNotAuthor comment={comment} setLogged={setLogged} user={user} token={token} />
+                                    return <CommentNotAuthor comment={comment}  setLogged={setLogged} user={user} token={token} />
                                 })}
                         </div>
                     }

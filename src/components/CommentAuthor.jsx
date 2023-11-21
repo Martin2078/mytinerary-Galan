@@ -7,9 +7,8 @@ import deleteIcon from '../assets/delete.png'
 import DeleteConfirmation from './DeleteConfirmation';
 
 
-const CommentAuthor = ({ comment, setLogged, user, token }) => {
+const CommentAuthor = ({ comment, user, token,setRender }) => {
 
-  let headers = { headers: { 'Authorization': `Bearer ${token}` } }
   const [openDelete,setOpenDelete]=useState(false)
 
   function valorationCircles() {
@@ -24,7 +23,7 @@ const CommentAuthor = ({ comment, setLogged, user, token }) => {
   return (<>
     {openDelete
     ?
-    <DeleteConfirmation setOpenDelete={setOpenDelete} comment={comment} headers={headers} toast={toast}/>
+    <DeleteConfirmation setOpenDelete={setOpenDelete} setRender={setRender} comment={comment} token={token} toast={toast}/>
     :
     <div className='w-full min-h-[20vh] border-t flex flex-col py-2'>
       <Toaster position='top-center' />

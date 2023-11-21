@@ -1,10 +1,19 @@
 import axios from 'axios'
 import React from 'react'
 
-const deleteConfirmation = ({setOpenDelete,comment,headers,toast}) => {
+const DeleteConfirmation = ({setOpenDelete,comment,toast,token,setRender}) => {
+
+    
 
     async function deleteComment() {
-        let response = await axios.delete(`http://localhost:8080/comments/${comment._id}`,null,headers)
+        console.log(comment);
+        let headers = { headers: { 'Authorization': `Bearer ${token}` } }
+        let response = await axios.delete(`http://localhost:8080/comments/${comment._id}`,headers)
+        
+        if (response.data.success==true) {
+            toast.success(response.data.message)
+            setTimeout(()=>{setRender(true);setOpenDelete(false)},2000)
+        }
     }
   return (
     <div className='w-full min-h-[20vh] border-t flex flex-col py-2'>
@@ -20,4 +29,4 @@ const deleteConfirmation = ({setOpenDelete,comment,headers,toast}) => {
   )
 }
 
-export default deleteConfirmation
+export default DeleteConfirmation

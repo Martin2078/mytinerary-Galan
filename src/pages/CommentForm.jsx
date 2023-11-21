@@ -123,7 +123,7 @@ const CommentForm = () => {
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Title</label>
-            <input onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title && "border-red-600"} w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
+            <input maxLength={80} onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title && "border-red-600"} w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
             <div className='w-8/12 flex justify-between'>
               <p className={`text-sm text-red-600 opacity-0 ${commentError.title && "opacity-100"}`}>* Obligatory field</p>
               <p className='font-light text-sm'>{commentData.title.length} of 80 characters maximum</p>
@@ -132,7 +132,7 @@ const CommentForm = () => {
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Message</label>
-            <textarea onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
+            <textarea minLength={100} onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
             <div className='w-8/12 flex justify-between'>
               <p className={`text-sm text-red-600 opacity-0 ${commentError.text && "opacity-100"}`}>* Must have almost 100 characters</p>
               <p className='font-light text-sm'>{commentData.text.length} of 100 characters minimum</p>
