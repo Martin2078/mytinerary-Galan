@@ -14,18 +14,18 @@ import save from '../assets/save.png'
 import notSave from '../assets/notSave.png'
 
 
-const ItineraryDetail = ({ token, user, dataItinerary, setCityDetails }) => {
+const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityDetails }) => {
 
     const navigate = useNavigate()
     const [logged, setLogged] = useState()
     const [averageValoration, setAverageValoration] = useState(0)
     const [render, setRender] = useState(false)
-    function averageRating() {
+    function averageRating(data) {
         let acum = 0
-        for (let i = 0; i < dataItinerary.comments.length; i++) {
-            acum += dataItinerary.comments[i].valoration.value
+        for (let i = 0; i < data.length; i++) {
+            acum += data[i].valoration.value
         }
-        let average = (acum / dataItinerary.comments.length)
+        let average = (acum / data.length)
         setAverageValoration(average)
     }
 
@@ -48,13 +48,11 @@ const ItineraryDetail = ({ token, user, dataItinerary, setCityDetails }) => {
 
     async function getComments() {
         let response = await axios.get(`http://localhost:8080/comments/${dataItinerary._id}`)
-        dataItinerary.comments = response.data.response
-        setRender(true)
+        setDataItinerary({...dataItinerary,comments:response.data.response})
+        averageRating(response.data.response)    
     }
     useEffect(() => {
-        setRender(false)
         getComments()
-        averageRating()
     }, [render])
 
 
@@ -140,14 +138,14 @@ const ItineraryDetail = ({ token, user, dataItinerary, setCityDetails }) => {
                         <div className='w-full flex flex-col gap-2'>
                             {user == null ?
                                 dataItinerary.comments?.map((comment) => {
-                                    return <CommentNotAuthor comment={comment} setLogged={setLogged} user={user} token={token} />
+                                    return <CommentNotAuthor setRender={setRender} comment={comment} setLogged={setLogged} user={user} token={token} />
                                 })
                                 :
                                 dataItinerary.comments?.map((comment) => {
                                     if (comment.userId._id == user._id) {
                                         return <CommentAuthor comment={comment} setRender={setRender} user={user} token={token} />
                                     }
-                                    return <CommentNotAuthor comment={comment}  setLogged={setLogged} user={user} token={token} />
+                                    return <CommentNotAuthor setRender={setRender} comment={comment}  setLogged={setLogged} user={user} token={token} />
                                 })}
                         </div>
                     }

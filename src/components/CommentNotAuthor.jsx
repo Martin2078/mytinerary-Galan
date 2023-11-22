@@ -6,10 +6,9 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast'
 import liked from '../assets/liked.png'
 import disliked from '../assets/disliked.png'
-const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
+const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
 
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    const [success,setSuccess]=useState(false)
     function valorationCircles() {
         let template = []
         for (let i = 0; i < 5; i++) {
@@ -29,9 +28,8 @@ const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
         }
         let response = await axios.put(`http://localhost:8080/comments/like`, object, headers)
         if (response.data.success==true) {
-            setSuccess(true)
+            setRender(prev=>!prev)
         }
-
     }
     async function dislikeComment() {
         if (user == null) {
@@ -46,13 +44,13 @@ const CommentNotAuthor = ({ comment, setLogged, user, token }) => {
         }
         let response = await axios.put(`http://localhost:8080/comments/dislike`, object, headers)
         if (response.data.success==true) {
-            setSuccess(true)
+            setRender(prev=>!prev)
         }
     }
 
     useEffect(()=>{
         
-    },[success])
+    },[])
     return (
         <div className='w-full min-h-[20vh] border-t flex flex-col py-2'>
             <Toaster position='top-center' />

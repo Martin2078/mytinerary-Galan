@@ -30,7 +30,6 @@ const City = () => {
   async function getItineraries() {
     let response = await axios.get(`http://localhost:8080/itineraries/${id}`)
     setItineraries(response.data.response)
-    console.log(response.data.response);
   }
 
   useEffect(() => {
@@ -81,7 +80,7 @@ const City = () => {
         </div>
       </div>
       <div ref={itinerariesScroll} className='w-full min-h-[100vh] flex flex-wrap items-center justify-center gap-x-10'>
-      {cityDetail && <ItineraryDetail token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
+      {cityDetail && <ItineraryDetail setDataItinerary={setDataItinerary} token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
         {itineraries?.length > 0 ?<>
         <div className='w-full h-[10vh] px-10'>
           <h2 className='text-4xl font-semibold'>Itineraries</h2>
