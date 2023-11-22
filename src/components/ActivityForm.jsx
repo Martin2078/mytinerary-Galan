@@ -15,6 +15,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
         photo: false,
         ubication: false
     })
+    const [urlPhotos,setUrlPhotos]=useState([])
 
     function getPhotos(e) {
         let arrayPhotos = []
@@ -24,14 +25,14 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
             let url = URL.createObjectURL(photosArray[i])
             arrayPhotos.push(url)
         }
-        setActivityPhotos([...activityPhotos,arrayPhotos])
+        setUrlPhotos(arrayPhotos)
+
     }
 
     function renderPhotos() {
         let template = []
-        let indexActivity=dataItinerary.activities.length-1
-        for (let i = 0; i < activityPhotos[indexActivity].length; i++) {
-            template.push(<img className='h-full w-[7vw] object-cover rounded-xl' src={activityPhotos[i]} alt="" />)
+        for (let i = 0; i < urlPhotos.length; i++) {
+            template.push(<img className='h-full w-[7vw] object-cover rounded-xl' src={urlPhotos[i]} alt="" />)
         }
         return template
     }
@@ -43,7 +44,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
             photo: activity.photo.length==0 ? activityError.photo = true : activityError.photo = false,
             ubication: activity.ubication == "" ? activityError.ubication = true : activityError.ubication = false,
         })
-
+                                                                                
         if (activityError.name == true || activityError.description == true || activityError.photo == true || activityError.ubication == true) {
             return
         }
@@ -55,7 +56,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
             photo: [],
             ubication: ''
         })
-        
+        setActivityPhotos([...activityPhotos,urlPhotos[0]])
         setActivityAdd(false)
     }
     useEffect(()=>{
@@ -66,7 +67,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
             <div className='w-full h-[10vh] flex flex-col items-center justify-center border-b'>
                 <h1 className='text-4xl font-semibold'>Activity {dataItinerary.activities.length + 1}</h1>
             </div>
-            <div className='w-full h-full flex flex-col justify-start gap-8'>
+            <div className='w-full h-full flex flex-col justify-start gap-6'>
                 <div className='w-full flex flex-col gap-2 '>
                     <div className='flex items-center justify-between'>
                         <p className='font-semibold text-xl'>Name</p>
@@ -80,7 +81,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
                         <p className='font-semibold text-xl'>Photo</p>
                         <p className={`text-sm text-red-600 opacity-0 ${activityError.photo && "opacity-100"}`}>* Obligatory field</p>
                     </div>
-                    {activity.photo.length > 0
+                    {urlPhotos.length > 0
                         ?
                         <div className='w-full h-[15vh] flex flex-col gap-2'>
                             <div className='w-full h-4/5 flex gap-5 overflow-x-auto'>
@@ -102,12 +103,13 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
                         </div>}
                 </div>
 
-                <div className='w-full flex flex-col gap-2 '>
-                    <div className='flex items-center justify-between'>
+                <div className='w-full flex flex-col gap-2 items-end'>
+                    <div className='w-full flex items-center justify-between'>
                         <p className='font-semibold text-xl'>Description</p>
                         <p className={`text-sm text-red-600 opacity-0 ${activityError.description && "opacity-100"}`}>* Obligatory field (minimum 50 characters)</p>
                     </div>
                     <textarea placeholder='Describe this activity...' onChange={(e) => setActivity({ ...activity, description: e.target.value })} className={`w-full h-[15vh] py-1 rounded-lg border ${activityError.description ? "border-red-600" : "border-black"} px-2 text-left resize-none`} type="text"></textarea>
+                    <p className='font-extralight'>{activity.description.length} of 50 characters minimum</p>
                 </div>
 
                 <div className='w-full flex flex-col gap-2 '>

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import citiesAction from '../redux/actions/citiesAction.js'
 import ItineraryForm from './ItineraryForm.jsx'
 import ActivityForm from './ActivityForm.jsx'
+import axios from 'axios'
 
 
 const AddItinerary = ({ setCreateItinerary }) => {
@@ -51,11 +52,31 @@ const AddItinerary = ({ setCreateItinerary }) => {
             return
         }
         console.log(dataItinerary);
-        // let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        // console.log(dataItinerary);
-        // let response = await axios.post('http://localhost:8080/itineraries', dataItinerary, headers)
-        // toast.success(response.data.message)
-        // setTimeout(() => { setCreateItinerary(false) }, 2000)
+        const formData=new FormData()
+        formData.append('title',dataItinerary.title)
+        formData.append('photo',dataItinerary.photo)
+        for (let i = 0; i< dataItinerary.price.length; i++) {
+            formData.append(`price`,dataItinerary.price[i])
+        }
+        formData.append('duration',dataItinerary.duration)
+        for (let i = 0; i< dataItinerary.hashtags.length; i++) {
+            formData.append(`hashtags`,dataItinerary.hashtags[i])
+        }
+        formData.append('cityId',dataItinerary.cityId)
+        formData.append('userId',dataItinerary.userId)
+        dataItinerary.activities.map((activity,index)=>{
+            formData.append(`activity${index}name`,activity.name)
+            formData.append(`activity${index}description`,activity.description)
+            activity.photo.forEach((photo) => {
+                formData.append(`activity${index}photo`,photo)
+            });
+            formData.append(`activity${index}ubication`,activity.ubication)
+        })
+
+        let headers = { headers: { 'Authorization': `Bearer ${token}` } }
+        let response = await axios.post('http://localhost:8080/itineraries', formData, headers)
+        toast.success(response.data.message)
+        setTimeout(() => { setCreateItinerary(prev=>!prev) }, 2000)
 
     }
 
@@ -165,12 +186,12 @@ const AddItinerary = ({ setCreateItinerary }) => {
                                     </div>
                                     <p className={`text-sm text-red-600 ${dataError.activities ? "block" : "hidden"}`}>* Obligatory Field (minimum 3)</p>
                                 </div>
-                                {activityPhotos?.length > 0 ?
+                                {dataItinerary.activities?.length > 0 ?
                                     <div className='overflow-y-auto h-full w-full flex flex-col gap-2 px-4'>
                                         {dataItinerary.activities.map((acti, index) => {
-                                            return <div className='w-full h-[10vh] border flex items-start relative rounded-xl'>
-                                                <img className='w-1/2 h-full object-cover rounded-xl' src={activityPhotos[index][0]} alt="" />
-                                                <div className='w-1/2  h-full px-2 py-1 overflow-hidden'>
+                                            return <div className='w-full h-[10vh] pr-5 border flex items-start relative rounded-xl'>
+                                                <img className='w-1/2 h-full object-cover rounded-xl' src={activityPhotos[index]} alt="" />
+                                                <div className='w-1/2 h-full px-1 py-1 overflow-hidden'>
                                                     <p className='font-semibold text-lg'>{acti.name.slice(0, 30)}</p>
                                                 </div>
                                                 <button onClick={() => deleteActivity(index)}><img className='w-2 absolute top-2 right-2' src={closeBlack} alt="" /></button>

@@ -7,6 +7,7 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
     function getPhoto(e) {
         let url = URL.createObjectURL(e.target.files[0])
         setPhotoItinerary(url)
+        setDataItinerary({...dataItinerary,photo:e.target.files[0]})
     }
 
     function setPrice(value, position) {

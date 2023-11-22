@@ -15,7 +15,6 @@ const City = () => {
   const { token, user }=useSelector((store)=>store.profileReducer)
   const [infoCity, setInfoCity] = useState()
   const [itineraries, setItineraries] = useState()
-  const [data, setData] = useState()
   const [view, setView] = useState(false)
   const topScroll = useRef(null)
   const itinerariesScroll = useRef(null)
@@ -25,7 +24,6 @@ const City = () => {
   async function getCity() {
     let response = await axios.get(`http://localhost:8080/cities/${id}`)
     setInfoCity(response.data.response)
-    setData(response.data.response.photo)
   }
   async function getItineraries() {
     let response = await axios.get(`http://localhost:8080/itineraries/${id}`)

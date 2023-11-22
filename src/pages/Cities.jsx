@@ -12,7 +12,6 @@ import filterCities from '../redux/actions/filterAction'
 
 
 const Cities = () => {
-  const text=useRef()
   const [page, setPage] = useState(1)
   const [next, setNext] = useState(false)
   const [prev, setPrev] = useState(false)
@@ -78,8 +77,7 @@ const Cities = () => {
       }
       if (populars == undefined ) {
         setPopulars([citiesStore.cities[0].photo[0], citiesStore.cities[1].photo[0], citiesStore.cities[2].photo[0], citiesStore.cities[3].photo[0]])
-      }
-      
+      }   
     }else{
       dispatch(citiesAction())
     }
