@@ -111,7 +111,7 @@ const Cities = () => {
       <div className='w-full h-full flex flex-col items-center mt-[2vh] '>
 
         <div className='flex items-center justify-center w-10/12 lg:w-4/12 h-[4vh] rounded border px-4 py-1 checked:border-2'>
-          <input onChange={(e)=> textFilter(e)} defaultValue={""}  className='w-full h-full outline-none' type="text" placeholder='Search city' />
+          <input onChange={(e)=> textFilter(e)} className='w-full h-full outline-none' type="text" placeholder='Search city' />
           <img className='h-full' src={searchIcon} alt="" />
         </div>
 

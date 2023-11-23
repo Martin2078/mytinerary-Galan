@@ -7,13 +7,13 @@ import toast from 'react-hot-toast'
 const CommentForm = () => {
   const { token, user } = useSelector((store) => store.profileReducer)
   const { id } = useParams()
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const [commentError, setCommentError] = useState({
     title: false,
     text: false,
     valoration: false,
   })
-
+  const [urlPhotos, setUrlPhotos] = useState([])
   let valoration = [{
     value: 1,
     textValue: "Very Bad"
@@ -44,29 +44,37 @@ const CommentForm = () => {
       textValue: undefined
     },
     itineraryId: id,
-    userId: undefined
+    userId:user._id
   })
-  const [rating, setRating] = useState()
 
   async function createComment(e) {
     e.preventDefault()
 
     setCommentError({
-      title: commentData.title === "" ? commentError.title=true : commentError.title=false,
-      text: commentData.text === "" || commentData.text.length<100 ? commentError.text=true : commentError.text=false,
-      valoration: commentData.valoration.value === undefined ? commentError.valoration=true : commentError.valoration=false
-    });           
+      title: commentData.title === "" ? commentError.title = true : commentError.title = false,
+      text: commentData.text === "" || commentData.text.length < 100 ? commentError.text = true : commentError.text = false,
+      valoration: commentData.valoration.value === undefined ? commentError.valoration = true : commentError.valoration = false
+    });
 
-    if (commentError.text==true || commentError.title==true || commentError.valoration==true) {
+    if (commentError.text == true || commentError.title == true || commentError.valoration == true) {
       return
     }
-    setCommentData({ ...commentData, userId: user._id })
-    console.log(commentData);
+
+    const formData = new FormData()
+    formData.append('text', commentData.text)
+    formData.append('title', commentData.title)
+    formData.append('userId',commentData.userId)
+    formData.append('itineraryId', commentData.itineraryId)
+    formData.append('valorationValue', commentData.valoration.value)
+    formData.append('valorationTextValue', commentData.valoration.textValue)
+    commentData.photo.forEach((img)=>{
+      formData.append(`photo`,img)
+    })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    let response = await axios.post('http://localhost:8080/comments',commentData,headers)
+    let response = await axios.post('http://localhost:8080/comments',formData,headers)
     toast.success(response.data.message)
     setTimeout(() => {
-      navigate(`/Cities/${id}`)
+      navigate(`/Cities/${commentData.itineraryId}`)
     }, 2000);
   }
 
@@ -75,11 +83,29 @@ const CommentForm = () => {
     setItineraryData(response.data.response)
   }
 
-  useEffect(() => {
+  function getPhotos(e) {
+    let urls = []
+    let arrayPhotos = Array.from(e.target.files)
 
-  }, [commentError])
+    for (let i = 0; i < arrayPhotos.length; i++) {
+      let url = URL.createObjectURL(arrayPhotos[i])
+      urls.push(url)
+    }
+    setUrlPhotos(urls)
+    setCommentData({ ...commentData, photo: arrayPhotos })
+  }
+
+  function renderPhotos() {
+    let template = []
+    for (let i = 0; i < urlPhotos.length; i++) {
+      template.push(<img className='h-full w-[15vw] object-cover rounded-xl' src={urlPhotos[i]} alt="" />)
+    }
+    return template
+  }
+
+
   useEffect(() => {
-    if (!token || !token.length>0) {
+    if (!token || !token.length > 0) {
       navigate('/SignIn')
     }
     getItinerary()
@@ -142,15 +168,26 @@ const CommentForm = () => {
 
           <div className='flex flex-col gap-4'>
             <p className='text-xl font-semibold'>Photo</p>
-            <div className='bg-gray-100 relative w-8/12 h-[20vh] border flex items-center justify-center rounded-lg'>
-              <input className='w-full h-full opacity-0 z-10' type="file" multiple />
-              <div className='flex flex-col items-center justify-center absolute z-0'>
-                <p className=''>Upload one or more photos!</p>
-                <p>press or drag and drop them</p>
-                <img className='w-[8vh]' src={notPhotos} alt="" />
+            {urlPhotos.length > 0 ?
+              <div className='w-full h-[25vh] flex flex-col gap-2'>
+                <div className='w-full h-5/6 flex gap-5 overflow-x-auto'>
+                  {renderPhotos()}
+                </div>
+                <div className='w-2/6 h-1/6 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
+                  <p className='font-semibold text-white absolute'>Change</p>
+                  <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 ' type="file" multiple />
+                </div>
               </div>
+              :
+              <div className='bg-gray-100 relative w-8/12 h-[20vh] border flex items-center justify-center rounded-lg'>
+                <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple />
+                <div className='flex flex-col items-center justify-center absolute z-0'>
+                  <p className=''>Upload one or more photos!</p>
+                  <p>press or drag and drop them</p>
+                  <img className='w-[8vh]' src={notPhotos} alt="" />
+                </div>
 
-            </div>
+              </div>}
           </div>
 
           <div className='w-8/12 h-[10vh] flex items-center justify-start px-2 '>

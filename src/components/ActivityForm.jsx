@@ -87,7 +87,7 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
                             <div className='w-full h-4/5 flex gap-5 overflow-x-auto'>
                                 {renderPhotos()}
                             </div>
-                            <div className='w-2/6 h-1/5 bg-[#2dc77f] border flex items-center rounded-xl justify-center realtive'>
+                            <div className='w-2/6 h-1/5 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
                                 <p className='absolute font-semibold text-white'>Change</p>
                                 <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 ' type="file" multiple />
                             </div>

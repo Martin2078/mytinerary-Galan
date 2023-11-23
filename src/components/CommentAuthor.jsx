@@ -40,7 +40,10 @@ const CommentAuthor = ({ comment, user, token, setRender }) => {
           <h1 className='text-xl font-semibold'>{comment.title}</h1>
           <Description info={comment.text} amountCharacters={80} />
         </div>
-        {comment.photo.length > 0 && <div className='w-full h-[8vh] border'>
+        {comment.photo.length > 0 && <div className='w-full h-[15vh] border flex gap-2 overflow-x-auto'>
+          {comment.photo.map(image=>{
+            return <img className='h-full w-[10vw] object-cover' src={image} alt="" />
+          })}
         </div>}
         <div className='w-full h-[4vh] flex justify-between items-end'>
           <div className='flex gap-5 items-end'>

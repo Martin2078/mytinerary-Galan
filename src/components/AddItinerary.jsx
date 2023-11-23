@@ -51,7 +51,6 @@ const AddItinerary = ({ setCreateItinerary }) => {
         if (dataError.hashtags == true || dataError.activities == true) {
             return
         }
-        console.log(dataItinerary);
         const formData=new FormData()
         formData.append('title',dataItinerary.title)
         formData.append('photo',dataItinerary.photo)
