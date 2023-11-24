@@ -72,9 +72,10 @@ const CommentForm = () => {
     })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     let response = await axios.post('http://localhost:8080/comments',formData,headers)
+    console.log(response);
     toast.success(response.data.message)
     setTimeout(() => {
-      navigate(`/Cities/${commentData.itineraryId}`)
+      navigate(`/Cities/${itineraryData.cityId}`)
     }, 2000);
   }
 
@@ -175,12 +176,12 @@ const CommentForm = () => {
                 </div>
                 <div className='w-2/6 h-1/6 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
                   <p className='font-semibold text-white absolute'>Change</p>
-                  <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 ' type="file" multiple />
+                  <input onChange={(e) => getPhotos(e)}  accept='.jpeg,.png,.jpg' className='w-full h-full opacity-0 ' type="file" multiple />
                 </div>
               </div>
               :
               <div className='bg-gray-100 relative w-8/12 h-[20vh] border flex items-center justify-center rounded-lg'>
-                <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple />
+                <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple accept='.jpeg,.png,.jpg' />
                 <div className='flex flex-col items-center justify-center absolute z-0'>
                   <p className=''>Upload one or more photos!</p>
                   <p>press or drag and drop them</p>

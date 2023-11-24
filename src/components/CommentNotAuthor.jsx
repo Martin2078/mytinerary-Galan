@@ -6,8 +6,24 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast'
 import liked from '../assets/liked.png'
 import disliked from '../assets/disliked.png'
+import '../style.css'
+import { useSpring,animated } from '@react-spring/web';
 const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
 
+    const reactions=useSpring({
+        from: {
+            scale: 0,
+            opacity: 0,
+          },
+          enter: {
+            scale: 1,
+            opacity: 1,
+          },
+          leave: {
+            scale: 0,
+            opacity: 0,
+          },
+    })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     function valorationCircles() {
         let template = []
@@ -74,11 +90,11 @@ const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
         </div>}
             <div className='w-full h-[4vh] flex gap-5 items-end'>
                 <div className='flex items-center gap-2'>
-                    <button onClick={() => likeComment()}><img className='w-4' src={comment.likes.find(id=>id==user?._id)?liked:like} alt="" /></button>
+                    <animated.button style={reactions} onClick={() => likeComment()}><img className='w-4 reactions' src={comment.likes.find(id=>id==user?._id)?liked:like} alt="" /></animated.button>
                     <p>{comment.likes.length}</p>
                 </div>
                 <div className='flex items-center gap-2'>
-                    <button onClick={() => dislikeComment()}><img className='w-4' src={comment.dislikes.find(id=>id==user?._id)?disliked:dislike} alt="" /></button>
+                    <animated.button style={reactions} onClick={() => dislikeComment()}><img className='w-4 reactions'  src={comment.dislikes.find(id=>id==user?._id)?disliked:dislike} alt="" /></animated.button>
                     <p>{comment.dislikes.length}</p>
                 </div>
             </div>

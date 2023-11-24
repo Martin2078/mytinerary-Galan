@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
-import { useParams } from 'react-router-dom'
-import buenosAires from '../assets/buenosAires.jpg'
+import { Link, useParams } from 'react-router-dom'
 import itinerarysArrow from '../assets/itinerarysArrow.png'
 import { useEffect } from 'react'
 import axios from 'axios'
@@ -9,7 +8,6 @@ import noItineraries from '../assets/noItineraries.png'
 import CityItinerary from '../components/CityItinerary'
 import ItineraryDetail from '../components/ItineraryDetail'
 import { useSelector } from 'react-redux'
-
 const City = () => {
   const { id } = useParams()
   const { token, user }=useSelector((store)=>store.profileReducer)
@@ -89,6 +87,7 @@ const City = () => {
           : <div className='w-6/12 h-[50vh] rounded-xl border shadow-md flex flex-col items-center justify-around'>
             <p className='text-3xl font-semibold'>There is no itineraries yet!</p>
             <img className='h-3/6' src={noItineraries} alt="" />
+          <Link to={'/MyTineraries'} className='w-1/2 h-[5vh] rounded-xl bg-[#2dc77f]'><button className='w-full h-full text-white font-semibold text-2xl'>Share one</button></Link>
           </div>}
       </div>
 

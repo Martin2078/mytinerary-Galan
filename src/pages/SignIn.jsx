@@ -96,7 +96,7 @@ const SignIn = () => {
               <p className='font-light'>Step 2 of 2</p>
               <h1 className='text-3xl font-semibold'>Sign In</h1>
               <div className='flex gap-2 items-center'>
-                <img className='w-[18vw] md:w-[8vw] lg:w-[4vw] h-auto lg:h-[8vh] xl:h-[6vh] object-cover object-center rounded-full' src={userFinded?.photo} alt="" />
+                <img className='w-[18vw] h-[8vh] min-[425px]:h-[10vh] md:w-[10vw]  lg:w-[5vw] lg:h-[5vh] xl:h-[7vh] object-cover object-center rounded-full' src={userFinded?.photo} alt="" />
                 <div className=''>
                   <p className='text-sm font-semibold'>{userFinded?.name} {userFinded?.surname}</p>
                   <p className='text-sm'>{userFinded?.email}</p>

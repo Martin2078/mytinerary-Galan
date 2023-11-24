@@ -9,28 +9,31 @@ import add from '../assets/add.png'
 import notItineraries from '../assets/notItineraries.jpg'
 import AddItinerary from '../components/AddItinerary'
 import { useNavigate } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast'
 
 
 const MyTineraries = () => {
   const { token, user } = useSelector((store) => store.profileReducer)
   const [countries, setCountries] = useState()
   const [myTineraries, setMyTineraries] = useState()
-  const uniques = new Set()
   const [createItinerary,setCreateItinerary]=useState(false)
+  const [allCountries,setAllCountries]=useState()
+  const [render,setRender]=useState(false)
   const navigate=useNavigate()
 
-
+  
   async function getUserItineraries() {
     const response = await axios.get(`http://localhost:8080/itineraries/me/${user._id}`)
     setMyTineraries(response.data.response)
     const allCountries = response.data.response.map((itinerary) => {
       return itinerary.cityId.country
     })
+    const uniques = new Set()
     for (const country of allCountries) {
       uniques.add(country)
     }
     setCountries(Array.from(uniques))
-    console.log(countries);
+    setAllCountries(Array.from(uniques))
   }
 
   const responsive = {
@@ -57,6 +60,16 @@ const MyTineraries = () => {
     }
   };
 
+  function textFilter(e) {
+    let text=e.target.value.toLowerCase().replaceAll(" ","")
+    if (text=="") {
+      setCountries(allCountries)
+      return
+    }
+    let finded=countries.filter((country)=>country.toLowerCase().includes(text))
+    setCountries(finded)
+  }
+
   useEffect(() => {
     if (!token || token.length<1) {
       navigate('/SignIn')
@@ -66,12 +79,13 @@ const MyTineraries = () => {
 
   return (
     <div className='w-full h-screen flex pt-[10vh] px-10 flex-col justify-between'>
-      {createItinerary&&<AddItinerary setCreateItinerary={setCreateItinerary} />}
+      <Toaster position='top-center' toastOptions={{custom:{duration:Infinity}}}/>
+      {createItinerary && <AddItinerary setRender={setRender} setCreateItinerary={setCreateItinerary} />}
       <button onClick={()=>setCreateItinerary(true)} className='flex items-center justify-center rounded-full fixed bottom-5 right-5 bg-[#2dc77f]'><img className='px-2 py-2' src={add} alt="" /></button>
       <div className='w-full h-[12vh] lg:h-[10vh] flex lg:flex-row flex-col items-center justify-between'>
         <h1 className='lg:text-4xl xl:text-5xl text-2xl font-semibold'>MyTineraries</h1>
         <div className='w-4/6 lg:w-1/6 flex border-2 rounded-lg lg:mr-14 py-1'>
-          <input className='w-full px-1 rounded-lg outline-none' placeholder='Search country' type="text" />
+          <input onChange={(e)=>textFilter(e)} className='w-full px-1 rounded-lg outline-none' placeholder='Search country' type="text" />
           <img src={searchIcon} alt="" />
         </div>
       </div>
@@ -105,7 +119,7 @@ const MyTineraries = () => {
             >
               {myTineraries.map((itinerary) => {
                 if (itinerary.cityId.country == country) {
-                  return <ItineraryCard itinerary={itinerary} />
+                  return <ItineraryCard setRender={setRender} itinerary={itinerary} toast={toast} token={token} />
                 }
               })}
             </Carousel>
@@ -113,7 +127,7 @@ const MyTineraries = () => {
         })
         :
         <div className='w-full lg:w-8/12 h-3/6 md:h-4/6 lg:h-5/6 flex items-end justify-center py-2 lg:py-5 shadow-lg rounded-lg' style={{backgroundImage:`url(${notItineraries})`,backgroundSize:'cover',backgroundPosition:'center'}}>
-          <p className='text-2xl lg:text-3xl xl:text-4xl text-center font-semibold text-white'>You haven't posted an itinerary yet!</p>
+          <p className='text-2xl lg:text-3xl xl:text-4xl text-center font-semibold text-white'>There is no Itineraries!</p>
         </div>
       }
       </div>

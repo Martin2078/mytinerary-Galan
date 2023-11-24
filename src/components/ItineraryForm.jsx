@@ -50,12 +50,12 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
                             <div className='w-full h-2/6 flex items-center justify-center opacity-0 hover:opacity-100 absolute bg-[#00000051] z-20'>
                                 <p className='text-white font-semibold text-xl'>Change</p>
                             </div>
-                            <input onChange={(e) => getPhoto(e)} className='w-full cursor-pointer opacity-0 h-full z-10' type="file" />
+                            <input onChange={(e) => getPhoto(e)} className='w-full cursor-pointer opacity-0 h-full z-10' type="file" accept='.jpeg,.png,.jpg' />
                         </div>
 
                         :
                         <div className={`bg-gray-100 relative w-8/12 h-[15vh] border ${dataError.photo ? "border-red-600" : "border-black"} flex items-center justify-center rounded-lg`}>
-                            <input onChange={e => getPhoto(e)} className='w-full h-full opacity-0 z-10' type="file" />
+                            <input onChange={e => getPhoto(e)} className='w-full h-full opacity-0 z-10' type="file" accept='.jpeg,.png,.jpg' />
                             <div className={`flex flex-col items-center justify-center absolute z-0`}>
                                 <p className=''>Upload one photo!</p>
                                 <p>press or drag and drop it</p>

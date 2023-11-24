@@ -12,7 +12,7 @@ const DeleteConfirmation = ({setOpenDelete,comment,toast,token,setRender}) => {
         
         if (response.data.success==true) {
             toast.success(response.data.message)
-            setTimeout(()=>{setRender(true);setOpenDelete(false)},2000)
+            setTimeout(()=>{ setRender(prev=>!prev);setOpenDelete(false)},2000)
         }
     }
   return (

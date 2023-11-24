@@ -89,12 +89,12 @@ const ActivityForm = ({ dataItinerary, setDataItinerary, setActivityAdd,activity
                             </div>
                             <div className='w-2/6 h-1/5 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
                                 <p className='absolute font-semibold text-white'>Change</p>
-                                <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 ' type="file" multiple />
+                                <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 ' accept='.jpeg,.png,.jpg' type="file" multiple />
                             </div>
                         </div>
                         :
                         <div className={`bg-gray-100 relative w-8/12 h-[12vh] border ${activityError.photo ? "border-red-600" : "border-black"} flex items-center justify-center rounded-lg`}>
-                            <input onChange={e => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple />
+                            <input onChange={e => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple accept='.jpeg,.png,.jpg' />
                             <div className={`flex flex-col items-center justify-center absolute z-0`}>
                                 <p className=''>Upload one or more photos!</p>
                                 <p>press or drag and drop them</p>

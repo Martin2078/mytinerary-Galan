@@ -11,7 +11,7 @@ import ActivityForm from './ActivityForm.jsx'
 import axios from 'axios'
 
 
-const AddItinerary = ({ setCreateItinerary }) => {
+const AddItinerary = ({ setCreateItinerary,setRender }) => {
     const { token, user } = useSelector(store => store.profileReducer)
     const [step, setStep] = useState(1)
     const [cities, setCities] = useState([])
@@ -71,11 +71,11 @@ const AddItinerary = ({ setCreateItinerary }) => {
             });
             formData.append(`activity${index}ubication`,activity.ubication)
         })
-
+        console.log(dataItinerary);
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
         let response = await axios.post('http://localhost:8080/itineraries', formData, headers)
         toast.success(response.data.message)
-        setTimeout(() => { setCreateItinerary(prev=>!prev) }, 2000)
+        setTimeout(() => { setCreateItinerary(prev=>!prev);setRender(prev=>!prev) }, 2000)
 
     }
 
