@@ -22,7 +22,7 @@ const CitiesConteiner = ({cities,maxPages,next,prev,setPage,page}) => {
           {cities?.length > 0 ?
             <>
               <div className='w-full min-h-[33vh] flex flex-wrap items-start justify-center gap-x-[3vw] gap-y-[4vh]'>
-                {cities.map((city) => {
+                {cities.map((city,index) => {
                   return <div className='cursor-pointer w-[80vw] md:w-[40vw] lg:w-[20vw] h-[20vh] rounded-xl bg-white px-3 py-3 flex flex-col justify-between lg:hover:scale-110' style={{ backgroundImage: `url(${city.photo[0]})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
                     <div className='flex flex-col gap-1'>
                       <h4 className='text-white font-bold text-lg'>{city?.cityName}</h4>
@@ -31,7 +31,7 @@ const CitiesConteiner = ({cities,maxPages,next,prev,setPage,page}) => {
                         <p className='text-white text-base'>{city?.country}</p>
                       </div>
                     </div>
-                    <button className='w-3/6 bg-[#2dc77f] rounded py-1'><Link to={`/Cities/${city._id}`}><p className='text-white'>View More</p></Link></button>
+                    <button className='w-3/6 bg-[#2dc77f] rounded py-1'><Link to={`/Cities/${city._id}/${index+1}`}><p className='text-white'>View More</p></Link></button>
                   </div>
                 })}
               </div>

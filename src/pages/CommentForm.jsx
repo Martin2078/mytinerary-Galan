@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 const CommentForm = () => {
   const { token, user } = useSelector((store) => store.profileReducer)
-  const { id } = useParams()
+  const { id,top } = useParams()
   const navigate = useNavigate()
   const [commentError, setCommentError] = useState({
     title: false,
@@ -79,7 +79,7 @@ const CommentForm = () => {
     });
     response.then(()=>{
       setTimeout(() => {
-        navigate(`/Cities/${itineraryData.cityId}`)
+        navigate(`/Cities/${itineraryData.cityId}/${top}`)
       }, 2000);
     })
    

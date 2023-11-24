@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import profile from '../redux/actions/userAction.js'
 
 
-const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCityDetails }) => {
+const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCityDetails,top }) => {
 
     const navigate = useNavigate()
     const [logged, setLogged] = useState()
@@ -73,7 +73,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
     }
 
     function navigateToCommentForm() {
-        navigate(`/CommentForm/${dataItinerary._id}`)
+        navigate(`/CommentForm/${dataItinerary._id}/${top}`)
     }
     function redirect(action, message) {
         if (!token) {

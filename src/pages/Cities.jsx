@@ -16,7 +16,6 @@ const Cities = () => {
   const [populars, setPopulars] = useState()
   const dispatch = useDispatch()
   const citiesStore = useSelector((store) => store.citiesReducer)
-
   function textFilter(e) {
     let textValue = e.target.value.toLowerCase().replaceAll(" ", "")
     if (textValue === "") {

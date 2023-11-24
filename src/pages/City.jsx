@@ -9,7 +9,7 @@ import CityItinerary from '../components/CityItinerary'
 import ItineraryDetail from '../components/ItineraryDetail'
 import { useSelector } from 'react-redux'
 const City = () => {
-  const { id } = useParams()
+  const { id,top } = useParams()
   const { token, user }=useSelector((store)=>store.profileReducer)
   const [infoCity, setInfoCity] = useState()
   const [itineraries, setItineraries] = useState()
@@ -42,7 +42,7 @@ const City = () => {
   }
   return (
     <div className='w-full h-[200vh]'>
-      {cityDetail && <ItineraryDetail setDataItinerary={setDataItinerary} token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
+      {cityDetail && <ItineraryDetail top={top} setDataItinerary={setDataItinerary} token={token} user={user} dataItinerary={dataItinerary} setCityDetails={setCityDetails}/>}
 
       <button onClick={() => scrollToItineraries()} className='px-2 py-2 rounded-xl absolute bg-[#2dc77f] right-10 bottom-5 flex items-center gap-2'>
         <p className='text-white text-lg font-semibold'>Itineraries</p>
@@ -55,7 +55,7 @@ const City = () => {
         <div className='w-full h-fit flex flex-col gap-2 '>
           <h1 className='text-5xl font-semibold'>{infoCity?.cityName}</h1>
           <h2 className='text-2xl'>{infoCity?.country}</h2>
-          <p className='font-light'>Visitors: {infoCity?.popularity}</p>
+          <p className='text-[#2dc77f] font-semibold'>#Top{top} more visited cities</p>
         </div>
         <div className='w-full h-[55vh] flex '>
           <div className='w-8/12 h-full mr-5 '>

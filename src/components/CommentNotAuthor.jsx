@@ -6,24 +6,10 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast'
 import liked from '../assets/liked.png'
 import disliked from '../assets/disliked.png'
-import '../style.css'
-import { useSpring,animated } from '@react-spring/web';
-const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
+import { useAnimate } from 'framer-motion';
+const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
+    const [scope, animate] = useAnimate()
 
-    const reactions=useSpring({
-        from: {
-            scale: 0,
-            opacity: 0,
-          },
-          enter: {
-            scale: 1,
-            opacity: 1,
-          },
-          leave: {
-            scale: 0,
-            opacity: 0,
-          },
-    })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     function valorationCircles() {
         let template = []
@@ -32,7 +18,21 @@ const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
         }
         return template
     }
+
+    function resetAnimation() {
+        animate(scope.current,{
+            scale:1
+        },{duration:0.5})
+    }
+    function animationReactions() {
+        animate(scope.current,{
+            scale:0.5
+        },{duration:0.5})
+    }
+
     async function likeComment() {
+        
+        
         if (user == null) {
             setLogged(true)
             toast.error('You must be logged to like this comment!')
@@ -43,11 +43,12 @@ const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
             userId: user._id
         }
         let response = await axios.put(`http://localhost:8080/comments/like`, object, headers)
-        if (response.data.success==true) {
-            setRender(prev=>!prev)
+        if (response.data.success == true) {
+            setRender(prev => !prev)
         }
     }
     async function dislikeComment() {
+       
         if (user == null) {
             setLogged(true)
             toast.error('You must be logged to dislike this comment!')
@@ -59,14 +60,14 @@ const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
             userId: user._id
         }
         let response = await axios.put(`http://localhost:8080/comments/dislike`, object, headers)
-        if (response.data.success==true) {
-            setRender(prev=>!prev)
+        if (response.data.success == true) {
+            setRender(prev => !prev)
         }
     }
 
-    useEffect(()=>{
-        
-    },[])
+    useEffect(() => {
+
+    }, [])
     return (
         <div className='w-full min-h-[20vh] border-t flex flex-col py-2'>
             <Toaster position='top-center' />
@@ -84,21 +85,21 @@ const CommentNotAuthor = ({ comment,setRender, setLogged, user, token }) => {
                 <Description info={comment.text} amountCharacters={80} />
             </div>
             {comment.photo.length > 0 && <div className='w-full h-[15vh] border flex gap-2 overflow-x-auto'>
-          {comment.photo.map(image=>{
-            return <img className='h-full w-[10vw] object-cover' src={image} alt="" />
-          })}
-        </div>}
+                {comment.photo.map(image => {
+                    return <img className='h-full w-[10vw] object-cover' src={image} alt="" />
+                })}
+            </div>}
             <div className='w-full h-[4vh] flex gap-5 items-end'>
                 <div className='flex items-center gap-2'>
-                    <animated.button style={reactions} onClick={() => likeComment()}><img className='w-4 reactions' src={comment.likes.find(id=>id==user?._id)?liked:like} alt="" /></animated.button>
+                    <button ref={scope} className='w-4' onClick={() => likeComment()}><img  src={comment.likes.find(id => id == user?._id) ? liked : like} alt="" /></button>
                     <p>{comment.likes.length}</p>
                 </div>
                 <div className='flex items-center gap-2'>
-                    <animated.button style={reactions} onClick={() => dislikeComment()}><img className='w-4 reactions'  src={comment.dislikes.find(id=>id==user?._id)?disliked:dislike} alt="" /></animated.button>
+                    <button ref={scope} onClick={() => dislikeComment()}><img className='w-4' src={comment.dislikes.find(id => id == user?._id) ? disliked : dislike} alt="" /></button>
                     <p>{comment.dislikes.length}</p>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

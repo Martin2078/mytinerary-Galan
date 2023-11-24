@@ -21,7 +21,7 @@ const router=createBrowserRouter([
                 element:<Cities/>
             },
             {
-                path:'/Cities/:id',
+                path:'/Cities/:id/:top',
                 element:<City/>
             },
             {
@@ -37,7 +37,7 @@ const router=createBrowserRouter([
                 element:<MyTineraries/>
             },
             {
-                path:'/CommentForm/:id',
+                path:'/CommentForm/:id/:top',
                 element:<CommentForm/>
             },
             
