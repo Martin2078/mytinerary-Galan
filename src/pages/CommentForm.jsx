@@ -71,12 +71,18 @@ const CommentForm = () => {
       formData.append(`photo`,img)
     })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    let response = await axios.post('http://localhost:8080/comments',formData,headers)
-    console.log(response);
-    toast.success(response.data.message)
-    setTimeout(() => {
-      navigate(`/Cities/${itineraryData.cityId}`)
-    }, 2000);
+    let response = axios.post('http://localhost:8080/comments',formData,headers)
+    toast.promise(response, {
+      loading: 'Posting comment',
+      success: (data) => data.data.message,
+      error:(data)=> data.response.data.error
+    });
+    response.then(()=>{
+      setTimeout(() => {
+        navigate(`/Cities/${itineraryData.cityId}`)
+      }, 2000);
+    })
+   
   }
 
   async function getItinerary() {

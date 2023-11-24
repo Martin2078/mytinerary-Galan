@@ -18,7 +18,7 @@ const SignIn = () => {
   const [userFinded, setUserFinded] = useState({})
   const [step, setStep] = useState(1)
   const dispatch = useDispatch()
-  const { token, user } = useSelector(store => store.profileReducer)
+  const { token, user,message,loading } = useSelector(store => store.profileReducer)
   const [passwordView, setPasswordView] = useState(false)
   const navigate = useNavigate()
 
@@ -26,33 +26,49 @@ const SignIn = () => {
   async function getEmail() {
     setMail(mail.toLowerCase())
     const email = mail.toLowerCase()
-    const finded = await axios.get(`http://localhost:8080/auth?email=${email}`)
-    if (finded.data.error) {
-      toast.error(finded.data.error)
-    } else {
-      setUserFinded(finded.data.response[0])
-      setStep(2)
-    }
+    const finded = axios.get(`http://localhost:8080/auth?email=${email}`)
+    toast.promise(finded, {
+      loading: 'Loading',
+      success: (data) => data.data.message,
+      error:(data)=> data.response.data.error
+    });
+    finded.then((res)=>{
+      if (res.data.success==true) {
+        setStep(2)
+        setUserFinded(res.data.response[0])
+      }
+    })
+    
+    
+    
+    // if (finded.data.error) {
+    //   toast.error(finded.data.error)
+    // } else {
+    //  
+    //   
+    // }
   }
   async function SignInUser() {
     const objeto = {
       email: mail,
       password: pass
     }
-    const response = await axios.post('http://localhost:8080/auth/SignIn', objeto)
-    if (response.data.error) {
-      toast.error(response.data.error)
-      return
-    } else {
-      toast.success(response.data.message)
+    const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
+    toast.promise(response, {
+      loading: 'Getting user',
+      success: (data) => data.data.message,
+      error:(data)=> data.response.data.error
+    });
+    response.then((res)=>{
+      localStorage.setItem("token", res.data.response.token)
+      localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
+      localStorage.setItem("favorites", JSON.stringify(res.data.response.userFinded.favorites))
+      dispatch(profile.logIn(res.data.response))
       setTimeout(() => {
-        localStorage.setItem("token", response.data.response.token)
-        localStorage.setItem("user", JSON.stringify(response.data.response.userFinded))
-        dispatch(profile(response.data.response))
         navigate('/')
       }, 2000)
-
-    }
+    })
+    
   }
 
   useEffect(()=>{

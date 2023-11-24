@@ -12,14 +12,20 @@ import CommentAuthor from './CommentAuthor.jsx'
 import CommentNotAuthor from './CommentNotAuthor.jsx'
 import save from '../assets/save.png'
 import notSave from '../assets/notSave.png'
+import { useDispatch, useSelector } from 'react-redux'
+import profile from '../redux/actions/userAction.js'
 
 
-const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityDetails }) => {
+const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCityDetails }) => {
 
     const navigate = useNavigate()
     const [logged, setLogged] = useState()
     const [averageValoration, setAverageValoration] = useState(0)
     const [render, setRender] = useState(false)
+    const dispatch = useDispatch()
+    const favorites = useSelector((store) => store.profileReducer.favorites)
+    let headers = { headers: { 'Authorization': `Bearer ${token}` } }
+
     function averageRating(data) {
         let acum = 0
         for (let i = 0; i < data.length; i++) {
@@ -37,19 +43,51 @@ const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityD
         return template
     }
 
-    function redirect() {
+    async function addToFavorite() {
+        let response = axios.post(`http://localhost:8080/auth/favorites/${dataItinerary._id}`, null, headers)
+        toast.promise(response, {
+            loading: 'Saving',
+            success: (data) => data.data.message,
+            error: (data) => data.response.data.error
+        });
+        response.then((res) => {
+            localStorage.removeItem('favorites')
+            localStorage.setItem('favorites', JSON.stringify(res.data.response))
+            dispatch(profile.addFavorite(res.data.response))
+        })
+
+    }
+    async function deleteFromFavorite() {
+        let response = axios.delete(`http://localhost:8080/auth/favorites/${dataItinerary._id}`, headers)
+        console.log(response);
+        toast.promise(response, {
+            loading: 'Unsaving',
+            success: (data) => data.data.message,
+            error: (data) => data.response.data.error
+        });
+        response.then((res) => {
+            localStorage.setItem('favorites', JSON.stringify(res.data.response))
+            dispatch(profile.deleteFavorite(res.data.response))
+        })
+
+    }
+
+    function navigateToCommentForm() {
+        navigate(`/CommentForm/${dataItinerary._id}`)
+    }
+    function redirect(action, message) {
         if (!token) {
-            toast.error('You must be logged to comment!')
+            toast.error(message)
             setLogged(true)
         } else {
-            navigate(`/CommentForm/${dataItinerary._id}`)
+            action()
         }
     }
 
     async function getComments() {
         let response = await axios.get(`http://localhost:8080/comments/${dataItinerary._id}`)
-        setDataItinerary({...dataItinerary,comments:response.data.response})
-        averageRating(response.data.response)    
+        setDataItinerary({ ...dataItinerary, comments: response.data.response })
+        averageRating(response.data.response)
     }
     useEffect(() => {
         getComments()
@@ -57,10 +95,10 @@ const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityD
 
 
     return (
-        <div className='fixed top-0 left-0 w-screen h-screen bg-[#0000003b] flex justify-end z-30'>
+        <div className='fixed top-0 left-0 w-full h-screen bg-[#0000003b] flex justify-end z-30'>
             <Toaster position='top-center' />
             {logged && <SignInEmergent setLogged={setLogged} />}
-            <div className='max-w-[35vw] min-h-screen overflow-y-scroll px-1 bg-white animationMyItinerary relative rounded-l-2xl flex flex-col items-center'>
+            <div className='max-w-[35vw] overflow-y-auto min-h-screen px-1 bg-white animationMyItinerary relative rounded-l-2xl flex flex-col items-center'>
                 <div className='w-full min-h-[6vh] flex justify-end px-2'>
                     <button onClick={() => setCityDetails(false)}><img className='w-5' src={closeBlack} alt="" /></button>
                 </div>
@@ -90,10 +128,18 @@ const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityD
                             return `${hash} `
                         })}</p>
                         <div className='w-full h-10'>
-                            <button className='w-3/12 h-full border-2 hover:bg-[#2dc77f] border-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
-                                <img src={notSave} alt="" />
-                                <p className='text-xl font-semibold text-black'>Save</p>
-                            </button>
+                            {favorites?.find(favorite => favorite._id == dataItinerary._id) ?
+                                <button onClick={() => deleteFromFavorite()} className='w-3/12 h-full border-2 hover:bg-[#2dc77fa8] bg-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
+                                    <img src={save} alt="" />
+                                    <p className='text-xl font-semibold text-white'>Saved</p>
+                                </button>
+                                :
+                                <button onClick={() => redirect(addToFavorite(), 'You must be logged to save this itinerary!')} className='w-3/12 h-full border-2 hover:bg-[#2dc77f] border-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
+                                    <img src={notSave} alt="" />
+                                    <p className='text-xl font-semibold text-black'>Save</p>
+                                </button>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -126,7 +172,7 @@ const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityD
                         </div>
 
                     }
-                    <button onClick={() => redirect()} className='border w-fit rounded-xl bg-[#2dc77f]'><p className='text-white text-lg font-semibold px-3 py-1'>Write a opinion</p></button>
+                    <button onClick={() => redirect(navigateToCommentForm, 'You must be logged to comment!')} className='border w-fit rounded-xl bg-[#2dc77f]'><p className='text-white text-lg font-semibold px-3 py-1'>Write a opinion</p></button>
                     {dataItinerary.comments?.length < 1
                         ?
                         <div className='w-full h-[25vh] flex flex-col items-center py-2 px-2'>
@@ -145,7 +191,7 @@ const ItineraryDetail = ({ token, user, dataItinerary,setDataItinerary, setCityD
                                     if (comment.userId._id == user._id) {
                                         return <CommentAuthor comment={comment} setRender={setRender} user={user} token={token} />
                                     }
-                                    return <CommentNotAuthor setRender={setRender} comment={comment}  setLogged={setLogged} user={user} token={token} />
+                                    return <CommentNotAuthor setRender={setRender} comment={comment} setLogged={setLogged} user={user} token={token} />
                                 })}
                         </div>
                     }

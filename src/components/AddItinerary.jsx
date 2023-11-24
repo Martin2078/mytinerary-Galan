@@ -71,11 +71,20 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
             });
             formData.append(`activity${index}ubication`,activity.ubication)
         })
-        console.log(dataItinerary);
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        let response = await axios.post('http://localhost:8080/itineraries', formData, headers)
-        toast.success(response.data.message)
-        setTimeout(() => { setCreateItinerary(prev=>!prev);setRender(prev=>!prev) }, 2000)
+        let response = axios.post('http://localhost:8080/itineraries', formData, headers)
+        toast.promise(response, {
+            loading: 'Posting itinerary',
+            success: (data) => data.data.message,
+            error:(data)=> data.response.data.error
+          });
+          response.then(()=>{
+            setTimeout(() => { 
+                setCreateItinerary(prev=>!prev);
+                setRender(prev=>!prev) 
+            }, 2000)
+
+          })
 
     }
 
