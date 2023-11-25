@@ -12,7 +12,6 @@ import menu from '../assets/menu.png'
 import close from '../assets/close.png'
 import myItineraries from '../assets/myItineraries.png'
 import Favorites from '../components/Favorites'
-
 const Header = () => {
   const home = useMatch('/')
   const cities = useMatch('/Cities')
@@ -25,6 +24,21 @@ const Header = () => {
   const [screenwidth, setScreenWidth] = useState(window.innerWidth)
   const navigate = useNavigate()
 
+  // const { signOut, loaded } = useGoogleLogout({
+  //   jsSrc,
+  //   onFailure,
+  //   clientId,
+  //   cookiePolicy,
+  //   loginHint,
+  //   hostedDomain,
+  //   fetchBasicProfile,
+  //   discoveryDocs,
+  //   uxMode,
+  //   redirectUri,
+  //   scope,
+  //   accessType,
+  //   onLogoutSuccess
+  // })
   function DropdownItem({ img, text, link }) {
     return (
       <Link to={link}>

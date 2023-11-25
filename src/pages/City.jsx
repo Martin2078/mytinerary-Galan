@@ -55,7 +55,7 @@ const City = () => {
         <div className='w-full h-fit flex flex-col gap-2 '>
           <h1 className='text-5xl font-semibold'>{infoCity?.cityName}</h1>
           <h2 className='text-2xl'>{infoCity?.country}</h2>
-          <p className='text-[#2dc77f] font-semibold'>#Top{top} more visited cities</p>
+          <p className='text-[#2dc77f] font-semibold'>#Top{top} most visited cities</p>
         </div>
         <div className='w-full h-[55vh] flex '>
           <div className='w-8/12 h-full mr-5 '>

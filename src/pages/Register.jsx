@@ -7,8 +7,11 @@ import showPassword from '../assets/showPassword.png'
 import notShowPassword from '../assets/notShowPassword.png'
 import facebook from '../assets/facebook.png'
 import RegisterVideo from '../assets/RegisterVideo.mp4'
+import { gapi } from 'gapi-script'
 
 const Register = () => {
+  const clientID = `1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
+
   const [data, setData] = useState({
     name: "",
     surname: "",
@@ -25,7 +28,7 @@ const Register = () => {
     email: false,
     password: false,
   })
-  const [photoUrl,setPhotoUrl]=useState()
+  const [photoUrl, setPhotoUrl] = useState()
   const [step, setStep] = useState(1)
   const [passwordView, setPasswordView] = useState(false)
   const navigate = useNavigate()
@@ -54,21 +57,21 @@ const Register = () => {
     data.email = data.email.toLowerCase()
     data.name = data.name.charAt(0).toUpperCase() + data.name.slice(1)
     data.surname = data.surname.charAt(0).toUpperCase() + data.surname.slice(1)
-    const formData=new FormData()
-    formData.append('name',data.name)
-    formData.append('surname',data.surname)
-    formData.append('date',data.date)
-    formData.append('email',data.email)
-    formData.append('password',data.password)
-    formData.append('photo',data.photo)
-    const newUser=await axios.post('http://localhost:8080/auth/Register',formData)
-    console.log(newUser);
-    if (newUser.data.success===true) {
-      toast.success(newUser.data.message)
-      setTimeout(()=>{navigate('/SignIn')},2000)
-    }else{
-      toast.error(newUser.data.error)
-    }
+    const formData = new FormData()
+    formData.append('name', data.name)
+    formData.append('surname', data.surname)
+    formData.append('email', data.email)
+    formData.append('password', data.password)
+    formData.append('photo', data.photo)
+    const newUser =  axios.post('http://localhost:8080/auth/Register', formData)
+    toast.promise(newUser, {
+      loading: 'Creting User',
+      success: (data) => data.data.message,
+      error:(data)=> data.response.data.error
+    });
+    newUser.then(()=>{
+      setTimeout(() => { navigate('/SignIn') }, 2000)
+    })
 
   }
   function getPhoto(e) {
@@ -77,10 +80,41 @@ const Register = () => {
     setPhotoUrl(url)
   }
 
+  async function onSuccess(response) {
+    console.log("entre");
+    console.log(response);
+    let userData = {
+      name: response.profileObj.givenName,
+      surname: response.profileObj.familyName,
+      email: response.profileObj.email,
+      password: response.profileObj.googleId,
+      photo: response.profileObj.imageUrl
+    }
+
+    const newUser = await axios.post('http://localhost:8080/auth/Register', userData)
+    if (newUser.data.success === true) {
+      toast.success(newUser.data.message)
+      setTimeout(() => { navigate('/SignIn') }, 2000)
+    } else {
+      toast.error("You are already register!")
+    }
+  }
+
+  const onFailure = () => {
+    toast.error("Something went wrong")
+  }
+
   useEffect(() => {
     if (localStorage.getItem('token')) {
       navigate('/')
     }
+    const start = () => {
+      gapi.client.init({
+        clientId: clientID,
+        scope: ""
+      })
+    }
+    gapi.load("client:auth2", start)
   }, [])
 
   return (
@@ -107,7 +141,7 @@ const Register = () => {
                   <p className='text-sm lg:text-xs font-light'>Email</p>
                   {dataError.email && <p className='text-sm lg:text-xs text-red-600'>* Obligatory field (must have @xxxx.com)</p>}
                 </div>
-                <input onChange={(e) => setData({ ...data, email: e.target.value })} className='border-b text-sm border-black w-full outline-none' placeholder='email@gmail.com' type="text"  defaultValue={data.email}/>
+                <input onChange={(e) => setData({ ...data, email: e.target.value })} className='border-b text-sm border-black w-full outline-none' placeholder='email@gmail.com' type="text" defaultValue={data.email} />
               </div>
               <div className='w-full'>
                 <div className='flex justify-between'>
@@ -126,10 +160,8 @@ const Register = () => {
               </div>
             </div>
             <div className='w-full h-[15vh] flex flex-col items-center justify-end gap-4'>
-              <button className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
-                <img src={google} alt="" />
-                <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
-              </button>
+              <GoogleLogin buttonText='Sign up with google' className='w-full flex justify-center ' clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} isSignedIn={true} cookiePolicy={"single_host_policy"} />
+
               <button className='w-full h-fit py-2 shadow-md bg-blue-600 rounded-lg flex items-center justify-center lg:gap-2'>
                 <img className='w-6' src={facebook} alt="" />
                 <p className='text-white w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Facebook</p>
@@ -139,7 +171,7 @@ const Register = () => {
             :
             <>
               <div className='w-full h-4/5 flex flex-col justify-center gap-5'>
-                <button className='absolute top-5' onClick={()=>setStep(1)}>
+                <button className='absolute top-5' onClick={() => setStep(1)}>
                   <p className='text-blue-600 text-sm font-extralight'>{'<'} back step 1</p>
                 </button>
                 <p className='font-light'>Step 2 of 2</p>
@@ -163,23 +195,23 @@ const Register = () => {
                     <p className='text-sm lg:text-xs font-light'>Date</p>
                     {dataError.date && <p className='text-sm lg:text-xs text-red-600'>* Obligatory field (18+)</p>}
                   </div>
-                  <input onChange={(e) => setData({ ...data, date: e.target.value })} className={`border-b text-sm ${dataError.date ? "border-red-600" : " border-black"} w-full outline-none`} type="date"  defaultValue={data.date}/>
+                  <input onChange={(e) => setData({ ...data, date: e.target.value })} className={`border-b text-sm ${dataError.date ? "border-red-600" : " border-black"} w-full outline-none`} type="date" defaultValue={data.date} />
                 </div>
                 <div className='w-full flex flex-col gap-1'>
                   <div className='flex justify-between'>
                     <p className='text-sm lg:text-xs font-light'>Photo</p>
                     {dataError.photo && <p className='text-sm lg:text-xs text-red-600'>* Obligatory field</p>}
                   </div>
-                  {photoUrl?
-                  <div className='w-[8vw] h-[10vh] relative'>
+                  {photoUrl ?
+                    <div className='w-[8vw] h-[10vh] relative'>
                       <img className='w-full h-full object-cover rounded-full' src={photoUrl} alt="" />
                       <div className='absolute top-[30%] left-0 flex items-center justify-center rounded-xl w-full h-2/5 bg-[#00000082] opacity-0 hover:opacity-100'>
-                      <p className='text-white font-semibold'>Change</p>
-                      <input onChange={(e) => getPhoto(e)} className={`text-sm absolute h-full w-full opacity-0 `} type="file" />
+                        <p className='text-white font-semibold'>Change</p>
+                        <input onChange={(e) => getPhoto(e)} className={`text-sm absolute h-full w-full opacity-0 `} type="file" />
                       </div>
-                      
-                  </div>
-                  :
+
+                    </div>
+                    :
                     <input onChange={(e) => getPhoto(e)} accept='.jpeg,.png,.jpg' className={`text-sm w-full ${dataError.photo ? "text-red-600" : " text-black"} `} type="file" />
                   }                </div>
                 <div className='w-full flex justify-end'>
