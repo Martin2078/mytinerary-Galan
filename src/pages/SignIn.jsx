@@ -6,10 +6,9 @@ import profile from '../redux/actions/userAction'
 import toast, { Toaster } from 'react-hot-toast'
 import showPassword from '../assets/showPassword.png'
 import notShowPassword from '../assets/notShowPassword.png'
-import facebook from '../assets/facebook.png'
+import google from '../assets/google.png'
 import SignInVideo from '../assets/SignInVideo.mp4'
-import {GoogleLogin , GoogleOAuthProvider} from '@react-oauth/google'
-
+import GoogleLogin from '@stack-pulse/next-google-login'
 
 const SignIn = () => {
   const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
@@ -40,26 +39,26 @@ const SignIn = () => {
     })
   }
   const onSuccess=(res)=>{
-    console.log(res);
-    // const objeto = {
-    //   email: res.profileObj.email,
-    //   password: res.profileObj.googleId
-    // }
-    // const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
-    // toast.promise(response, {
-    //   loading: 'Getting user',
-    //   success: (data) => data.data.message,
-    //   error:(data)=> data.response.data.error
-    // });
-    // response.then((res)=>{
-    //   localStorage.setItem("token", res.data.response.token)
-    //   localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
-    //   localStorage.setItem("favorites", JSON.stringify(res.data.response.userFinded.favorites))
-    //   dispatch(profile.logIn(res.data.response))
-    //   setTimeout(() => {
-    //     navigate('/')
-    //   }, 2000)
-    // })
+    const objeto = {
+      email: res.profileObj.email,
+      password: res.profileObj.googleId
+    }
+    const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
+    console.log(response);
+    toast.promise(response, {
+      loading: 'Getting user',
+      success: (data) => data.data.message,
+      error:(data)=> data.response.data.error
+    });
+    response.then((res)=>{
+      localStorage.setItem("token", res.data.response.token)
+      localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
+      localStorage.setItem("favorites", JSON.stringify(res.data.response.userFinded.favorites))
+      dispatch(profile.logIn(res.data.response))
+      setTimeout(() => {
+        navigate('/')
+      }, 2000)
+    })
   }
   const onFailure=()=>{
     toast.error("Something went wrong")
@@ -91,12 +90,6 @@ const SignIn = () => {
     if (localStorage.getItem('token')) {
       navigate('/')
     }
-    // const start=()=>{
-    //   gapi.client.init({
-    //     clientId:clientID,
-    //     scope:""})
-    // }
-    // gapi.load("client:auth2",start)
   },[])
 
   return (
@@ -109,7 +102,7 @@ const SignIn = () => {
       </div>
 
       <div className='w-full lg:w-1/2 h-full flex items-end md:items-center justify-center'>
-        <div className={`w-[90vw] md:w-[60vw]  md:mb-0 lg:w-[35vw] xl:w-[30vw] ${step==1?"h-[60vh] mb-[10vh]":"h-[70vh] mb-[5vh]"} lg:h-[65vh] rounded-xl flex flex-col items-center px-6 lg:px-10 py-8 justify-around bg-white shadow-xl shadow-black`}>
+        <div className={`w-[90vw] md:w-[50vw]  md:mb-0 lg:w-[35vw] xl:w-[30vw] ${step==1?"h-[60vh] mb-[10vh]":"h-[70vh] mb-[5vh]"} lg:h-[65vh] rounded-xl flex flex-col items-center px-6 lg:px-10 py-8 justify-around bg-white shadow-xl shadow-black`}>
           {step == 1
             ?
             <div className='w-full h-4/5 flex flex-col gap-5'>
@@ -153,14 +146,11 @@ const SignIn = () => {
                 </button>
               </div>
             </div>}
-          <div className='w-full lg:h-[15vh] h-[18vh]  flex flex-col items-center justify-end gap-4'>
-            <GoogleOAuthProvider clientId={clientID}>
-            <GoogleLogin onSuccess={onSuccess}  onError={onFailure} cookiePolicy={'single_host_policy'} />
-            </GoogleOAuthProvider>
-            <button className='w-full h-fit py-2 shadow-md bg-blue-600 rounded-lg flex items-center justify-center lg:gap-2'>
-              <img className='w-6' src={facebook} alt="" />
-              <p className='text-white w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Facebook</p>
-            </button>
+          <div className='w-full h-[8vh] border-t flex flex-col items-center justify-end gap-4'>
+            <GoogleLogin render={renderProps=><button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
+              <img src={google} alt="" />
+              <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
+            </button>} isSignedIn={true} clientId={clientID} onSuccess={onSuccess}  onFailure={onFailure} cookiePolicy={'single_host_policy'} />
           </div>
         </div>
 

@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import google from '../assets/google.png'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import showPassword from '../assets/showPassword.png'
 import notShowPassword from '../assets/notShowPassword.png'
-import facebook from '../assets/facebook.png'
 import RegisterVideo from '../assets/RegisterVideo.mp4'
-import { gapi } from 'gapi-script'
-
+import GoogleLogin from '@stack-pulse/next-google-login'
+import google from '../assets/google.png'
 const Register = () => {
   const clientID = `1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
 
@@ -63,13 +61,13 @@ const Register = () => {
     formData.append('email', data.email)
     formData.append('password', data.password)
     formData.append('photo', data.photo)
-    const newUser =  axios.post('http://localhost:8080/auth/Register', formData)
+    const newUser = axios.post('http://localhost:8080/auth/Register', formData)
     toast.promise(newUser, {
-      loading: 'Creting User',
+      loading: 'Creating User',
       success: (data) => data.data.message,
-      error:(data)=> data.response.data.error
+      error: (data) => data.response.data.error
     });
-    newUser.then(()=>{
+    newUser.then(() => {
       setTimeout(() => { navigate('/SignIn') }, 2000)
     })
 
@@ -81,8 +79,7 @@ const Register = () => {
   }
 
   async function onSuccess(response) {
-    console.log("entre");
-    console.log(response);
+
     let userData = {
       name: response.profileObj.givenName,
       surname: response.profileObj.familyName,
@@ -91,13 +88,19 @@ const Register = () => {
       photo: response.profileObj.imageUrl
     }
 
-    const newUser = await axios.post('http://localhost:8080/auth/Register', userData)
-    if (newUser.data.success === true) {
-      toast.success(newUser.data.message)
+    const newUser = axios.post('http://localhost:8080/auth/Register', userData)
+    console.log(newUser);
+
+    toast.promise(newUser, {
+      loading: 'Creating User',
+      success: (data) => data.data.message,
+      error: (data) => data.response.data.error
+    });
+    newUser.then(() => {
       setTimeout(() => { navigate('/SignIn') }, 2000)
-    } else {
-      toast.error("You are already register!")
-    }
+    })
+
+
   }
 
   const onFailure = () => {
@@ -108,13 +111,7 @@ const Register = () => {
     if (localStorage.getItem('token')) {
       navigate('/')
     }
-    const start = () => {
-      gapi.client.init({
-        clientId: clientID,
-        scope: ""
-      })
-    }
-    gapi.load("client:auth2", start)
+
   }, [])
 
   return (
@@ -159,13 +156,14 @@ const Register = () => {
                 </button>
               </div>
             </div>
-            <div className='w-full h-[15vh] flex flex-col items-center justify-end gap-4'>
-              <GoogleLogin buttonText='Sign up with google' className='w-full flex justify-center ' clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} isSignedIn={true} cookiePolicy={"single_host_policy"} />
+            <div className='w-full h-[8vh] flex flex-col items-center justify-end border-t gap-4'>
+              <GoogleLogin render={renderProps =>
+                <button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
+                  <img src={google} alt="" />
+                  <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignUp with Google</p>
+                </button>} buttonText='Sign up with google' className='w-full flex justify-center' clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} isSignedIn={true} cookiePolicy={"single_host_policy"} />
 
-              <button className='w-full h-fit py-2 shadow-md bg-blue-600 rounded-lg flex items-center justify-center lg:gap-2'>
-                <img className='w-6' src={facebook} alt="" />
-                <p className='text-white w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Facebook</p>
-              </button>
+
             </div>
           </>
             :

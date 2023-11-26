@@ -12,6 +12,7 @@ import menu from '../assets/menu.png'
 import close from '../assets/close.png'
 import myItineraries from '../assets/myItineraries.png'
 import Favorites from '../components/Favorites'
+import { GoogleLogout } from '@stack-pulse/next-google-login'
 const Header = () => {
   const home = useMatch('/')
   const cities = useMatch('/Cities')
@@ -23,6 +24,7 @@ const Header = () => {
   const [openFavorites,setOpenFavorites]=useState(false)
   const [screenwidth, setScreenWidth] = useState(window.innerWidth)
   const navigate = useNavigate()
+  const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
 
   // const { signOut, loaded } = useGoogleLogout({
   //   jsSrc,
@@ -101,7 +103,10 @@ const Header = () => {
             <Link to={"/MyTineraries"}><p className={`${MyTineraries != null ? "text-blue-500" : "text-white"}`}>MyTinerary</p></Link>
             {token ?
               <>
-                <button onClick={() => LogOutFunction()}><p className='text-white'>LogOut</p></button>
+              <GoogleLogout render={(renderProps)=>
+                              <button onClick={renderProps.onClick} disabled={renderProps.disabled}><p className='text-white'>LogOut</p></button>
+                            } clientId={clientID} 
+              buttonText="Logout" onLogoutSuccess={LogOutFunction}/>
                 <button onClick={()=>setOpenFavorites(true)}>
                   <img className='h-auto lg:h-[4vh] w-[10vw] lg:w-[3vw] object-cover object-center rounded-full' src={user.photo} alt="" />
                 </button>
@@ -129,7 +134,10 @@ const Header = () => {
                   <ul className='list-none flex flex-col justify-evenly h-full'>
                     <DropdownItem img={myItineraries} text={"MyTinery"} link={"/MyTineraries"} />
                     <DropdownItem img={signIn} text={"Favorites"} link={"/Me"} />
-                    <button onClick={() => LogOutFunction()}><DropdownItem img={logOut} text={"Log Out"} /></button>
+                    <GoogleLogout render={(renderProps)=>
+                    <button onClick={renderProps.onClick} disabled={renderProps.disabled}><DropdownItem img={logOut} text={"Log Out"} /></button>
+                  } clientId={clientID} 
+              buttonText="Logout" onLogoutSuccess={LogOutFunction}/>
                   </ul>
                 </div>}
 
