@@ -44,7 +44,6 @@ const SignIn = () => {
       password: res.profileObj.googleId
     }
     const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
-    console.log(response);
     toast.promise(response, {
       loading: 'Getting user',
       success: (data) => data.data.message,

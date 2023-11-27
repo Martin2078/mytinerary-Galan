@@ -14,12 +14,13 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
         dataItinerary.price[position] = value
     }
     function nextStep() {
+       
         setDataError({
             title: dataItinerary.title == "" || dataItinerary.title.length < 10 ? dataError.title = true : dataError.title = false,
             photo: photoItinerary == null ? dataError.photo = true : dataError.photo = false,
             cityId: dataItinerary.cityId == "" ? dataError.cityId = true : dataError.cityId = false,
             price: dataItinerary.price.length < 1 ? dataError.price = true : dataError.price = false,
-            duration: dataItinerary.duration == undefined || dataItinerary.duration < 5 || dataItinerary.duration.length > 1440 ? dataError.duration = true : dataError.duration = false,
+            duration: dataItinerary.duration == undefined || dataItinerary.duration < 5 || dataItinerary.duration > 1440 ? dataError.duration = true : dataError.duration = false,
         })
         if (dataError.title == true || dataError.photo == true || dataError.cityId == true || dataError.price == true || dataError.duration == true) {
             return
@@ -29,8 +30,8 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
 
     return (
         <>
-            <div className='w-full h-5/6 flex flex-col justify-start gap-5'>
-                <div className='w-full  flex flex-col'>
+            <div className='overflow-y-auto lg:overflow-hidden pr-4 lg:pr-0 w-full h-full lg:h-5/6 flex flex-col justify-start gap-5'>
+                <div className='w-full flex flex-col'>
                     <div className='flex flex-col '>
                         <p className='font-semibold text-xl'>Title</p>
                         <p className={`text-sm text-red-600 opacity-0 ${dataError.title && "opacity-100"}`}>* Obligatory Field (min 10 characters)</p>
@@ -45,7 +46,7 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
 
                     {photoItinerary !== undefined ?
 
-                        <div className='w-2/6 h-[15vh] border relative rounded-xl flex items-center justify-center z-0'>
+                        <div className='w-3/5 md:w-2/5 lg:w-4/5 h-[15vh] md:h-[20vh] lg:h-[15vh] border relative rounded-xl flex items-center justify-center z-0'>
                             <img className='h-full w-full absolute object-cover rounded-xl border' src={photoItinerary} alt="" />
                             <div className='w-full h-2/6 flex items-center justify-center opacity-0 hover:opacity-100 absolute bg-[#00000051] z-20'>
                                 <p className='text-white font-semibold text-xl'>Change</p>
@@ -83,7 +84,7 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
                         <p className={`text-sm text-red-600 opacity-0 ${dataError.price && "opacity-100"}`}>* Obligatory Field</p>
                     </div>
                     <div className='flex gap-2 items-center'>
-                        <select onChange={(e) => { setPrice(e.target.value, 0) }} className={`w-2/6 border rounded-lg py-1 ${dataError.price ? "border-red-600" : "border-black"}`} name="" id="">
+                        <select onChange={(e) => { setPrice(e.target.value, 0) }} className={`w-2/5 lg:w-2/6 border rounded-lg py-1 ${dataError.price ? "border-red-600" : "border-black"}`} name="" id="">
                             <option value="">Select Price</option>
                             <option value="1">$</option>
                             <option value="2">$$</option>
@@ -92,7 +93,7 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
                             <option value="4">$$$$$</option>
                         </select>
                         <p>-</p>
-                        <select onChange={(e) => { setPrice(e.target.value, 1) }} className={`w-2/6 border rounded-lg py-1 ${dataError.price ? "border-red-600" : "border-black"}`} name="" id="">
+                        <select onChange={(e) => { setPrice(e.target.value, 1) }} className={`w-2/5 lg:w-2/6 border rounded-lg py-1 ${dataError.price ? "border-red-600" : "border-black"}`} name="" id="">
                             <option value="">Select Price</option>
                             <option value="1">$</option>
                             <option value="2">$$</option>
@@ -105,9 +106,9 @@ const ItineraryForm = ({ dataItinerary, setDataItinerary, cities, setStep, dataE
                 <div className='w-full flex flex-col gap-1'>
                     <div className='flex flex-col'>
                         <p className='font-semibold text-xl'>Duration</p>
-                        <p className={`text-sm text-red-600 opacity-0 ${dataError.duration && "opacity-100"}`}>* Obligatory Field (between 5 and 1440 minutes)</p>
+                        <p className={`text-sm text-red-600 opacity-0 ${dataError.duration && "opacity-100"}`}>* Obligatory Field (min 5 and 1440 max)</p>
                     </div>
-                    <input placeholder='minutes' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className={`w-2/6 rounded-lg border px-2 py-1 ${dataError.duration ? "border-red-600" : "border-black"}`} type="number" />
+                    <input placeholder='minutes' min={5} max={1440} onChange={(e) => setDataItinerary({ ...dataItinerary, duration: e.target.value })} className={`w-3/5 lg:w-2/6 rounded-lg border px-2 py-1 ${dataError.duration ? "border-red-600" : "border-black"}`} type="number" />
                 </div>
             </div>
             <div className='w-full flex items-center justify-center mb-12'>

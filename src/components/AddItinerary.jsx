@@ -153,9 +153,9 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
                     success: { duration: 1500 },
 
                 }} />
-            <div className='w-[35vw] animationMyItinerary relative h-full z-40 bg-white flex flex-col items-center gap-5 px-8 rounded-l-2xl'>
+            <div className='w-full lg:w-[40vw] xl:w-[35vw] animationMyItinerary relative h-full z-40 bg-white flex flex-col items-center gap-5 px-4 lg:px-8 rounded-l-2xl'>
                 <button onClick={() => setCreateItinerary(false)} className='absolute top-4 right-4'><img className='w-5' src={closeBlack} alt="" /></button>
-                <div className='w-full h-[15vh] flex flex-col items-center justify-center border-b'>
+                <div className='w-full h-[15vh] mt-[5vh] lg:mt-0 flex flex-col items-center justify-center border-b'>
                     <h1 className='text-4xl font-semibold'>From Travelers</h1>
                     <h2 className='text-3xl font-semibold'>For Travelers</h2>
                 </div>
@@ -168,12 +168,12 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
                         <ActivityForm activityPhotos={activityPhotos} setActivityPhotos={setActivityPhotos} dataItinerary={dataItinerary} setActivityAdd={setActivityAdd} setDataItinerary={setDataItinerary} />
                         :
                         <><div className='w-full h-5/6 flex flex-col justify-start gap-12'>
-                            <div className='w-full min-h-[10vh] flex flex-col gap-2 '>
+                            <div className='w-full min-h-[10vh]  flex flex-col gap-2 '>
                                 <div className='flex flex-col'>
                                     <p className='font-semibold text-xl'>Hashtags</p>
                                     <p className={`text-sm text-red-600 ${dataError.hashtags ? "block" : "hidden"}`}>* Obligatory Field (minimum 3)</p>
                                 </div>
-                                {dataItinerary?.hashtags.length > 0 && <div className='w-full min-h-[4vh] flex flex-wrap gap-x-4 gap-y-2'>
+                                {dataItinerary?.hashtags.length > 0 && <div className='w-full min-h-[4vh] max-h-[10vh] lg:max-h-[16vh] overflow-y-auto flex flex-wrap gap-x-4 gap-y-2'>
                                     {dataItinerary.hashtags.map((hash, index) => {
                                         return <div className='flex items-center gap-2 border rounded-xl px-2 h-fit py-1'>
                                             <p className='font-medium'>{hash}</p>
@@ -186,7 +186,7 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
                                     <button onClick={() => addHashtag()} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
                                 </div>
                             </div>
-                            <div className='w-full max-h-[45vh] flex flex-col gap-4'>
+                            <div className='w-full max-h-[42vh] flex flex-col gap-4'>
                                 <div>
                                     <div className='w-full flex items-center justify-between py-1'>
                                         <p className='font-semibold text-xl'>Activities</p>
@@ -195,12 +195,12 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
                                     <p className={`text-sm text-red-600 ${dataError.activities ? "block" : "hidden"}`}>* Obligatory Field (minimum 3)</p>
                                 </div>
                                 {dataItinerary.activities?.length > 0 ?
-                                    <div className='overflow-y-auto h-full w-full flex flex-col gap-2 px-4'>
+                                    <div className='overflow-y-auto h-[35vh] w-full flex flex-col gap-2 px-4'>
                                         {dataItinerary.activities.map((acti, index) => {
-                                            return <div className='w-full h-[10vh] pr-5 border flex items-start relative rounded-xl'>
+                                            return <div className='w-full min-h-[10vh] pr-5 border flex items-start relative rounded-xl'>
                                                 <img className='w-1/2 h-full object-cover rounded-xl' src={activityPhotos[index]} alt="" />
                                                 <div className='w-1/2 h-full px-1 py-1 overflow-hidden'>
-                                                    <p className='font-semibold text-lg'>{acti.name.slice(0, 30)}</p>
+                                                    <p className='font-semibold text-sm lg:text-lg'>{acti.name.slice(0, 30)}</p>
                                                 </div>
                                                 <button onClick={() => deleteActivity(index)}><img className='w-2 absolute top-2 right-2' src={closeBlack} alt="" /></button>
                                             </div>
@@ -208,7 +208,7 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
                                     </div>
 
                                     :
-                                    <div className='flex flex-col w-full h-[35vh] items-center rounded-lg'>
+                                    <div className='flex flex-col w-full h-[30vh] lg:h-[35vh] items-center rounded-lg'>
                                         <img className='w-full h-4/6 object-cover rounded-lg'  src={notActivities} alt="" />
                                         <p className='text-xl font-semibold text-center'>There is no activies on this itinerary!</p>
                                         <p className='text-lg font-semibold text-center'>please insert almost 3</p>

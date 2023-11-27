@@ -84,12 +84,12 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
                 <h1 className='text-xl font-semibold'>{comment.title}</h1>
                 <Description info={comment.text} amountCharacters={80} />
             </div>
-            {comment.photo.length > 0 && <div className='w-full h-[15vh] border flex gap-2 overflow-x-auto'>
+            {comment.photo.length > 0 && <div className='w-full h-[12vh] lg:h-[10vh] xl:h-[15vh] border flex gap-2 overflow-x-auto'>
                 {comment.photo.map(image => {
-                    return <img className='h-full w-[10vw] object-cover' src={image} alt="" />
+                    return <img className='h-full min-w-[35vw] md:min-w-[20vw] lg:w-[10vw] object-cover' src={image} alt="" />
                 })}
             </div>}
-            <div className='w-full h-[4vh] flex gap-5 items-end'>
+            <div className='w-full h-[5vh] lg:h-[4vh] flex gap-5 items-end'>
                 <div className='flex items-center gap-2'>
                     <button ref={scope} className='w-4' onClick={() => likeComment()}><img  src={comment.likes.find(id => id == user?._id) ? liked : like} alt="" /></button>
                     <p>{comment.likes.length}</p>

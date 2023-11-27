@@ -56,7 +56,7 @@ const MyTineraries = () => {
     mobile: {
       breakpoint: { max: 425, min: 0 },
       items: 1,
-      partialVisibilityGutter: 30
+      partialVisibilityGutter: 0
     }
   };
 

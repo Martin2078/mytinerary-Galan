@@ -10,7 +10,7 @@ import backgroundImage3 from '../assets/backgroundImage3.jpg'
 import backgroundImage6 from '../assets/backgroundImage6.jpg'
 
 const Home = () => {
-  const data = [backgroundImage, backgroundImage2, backgroundImage3, backgroundImage6]
+  const data = ["https://firebasestorage.googleapis.com/v0/b/mytineraryfirebase.appspot.com/o/backgroundImage.jpg?alt=media&token=9167d8c8-f1e9-4eae-a44c-3e12dcb9760c", 'https://firebasestorage.googleapis.com/v0/b/mytineraryfirebase.appspot.com/o/backgroundImage2.jpg?alt=media&token=9666a29f-bce6-41e2-8d36-a5d2b3e52097', "https://firebasestorage.googleapis.com/v0/b/mytineraryfirebase.appspot.com/o/backgroundImage3.jpg?alt=media&token=9a185c63-cfe0-4453-a57b-38ff3bd1465f", "https://firebasestorage.googleapis.com/v0/b/mytineraryfirebase.appspot.com/o/backgroundImage6.jpg?alt=media&token=6e97cdb2-b835-41b2-ad9b-14bf82787766"]
 
   return (
     <div className='w-screen h-screen'>

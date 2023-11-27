@@ -98,14 +98,14 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
         <div className='fixed top-0 left-0 w-full h-screen bg-[#0000003b] flex justify-end z-30'>
             <Toaster position='top-center' />
             {logged && <SignInEmergent setLogged={setLogged} />}
-            <div className='max-w-[35vw] overflow-y-auto min-h-screen px-1 bg-white animationMyItinerary relative rounded-l-2xl flex flex-col items-center'>
+            <div className='w-full md:w-[70vw] lg:max-w-[35vw] overflow-y-auto min-h-screen px-1 bg-white animationMyItinerary relative rounded-l-2xl flex flex-col items-center'>
                 <div className='w-full min-h-[6vh] flex justify-end px-2'>
                     <button onClick={() => setCityDetails(false)}><img className='w-5' src={closeBlack} alt="" /></button>
                 </div>
 
                 <div className='w-full h-full flex flex-col'>
                     <img className='h-[35vh] w-full object-cover rounded-xl' src={dataItinerary?.photo} alt="" />
-                    <div className='w-full px-5 flex flex-col gap-2 py-4  pb-8'>
+                    <div className='w-full px-2 lg:px-5 flex flex-col gap-2 py-4  pb-8'>
                         <h1 className='text-3xl font-semibold'>{dataItinerary?.title}</h1>
                         <div className='w-full flex items-center gap-2'>
                             <p className='font-semibold text-xl'>Price:</p>
@@ -121,7 +121,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
                             })}</p>
                         </div>
                         <div className='w-full flex items-end gap-2'>
-                            <p className='font-semibold text-xl'>Aproximated duration:</p>
+                            <p className='font-semibold text-base lg:text-xl'>Aproximated duration:</p>
                             <p>{dataItinerary?.duration} minutes</p>
                         </div>
                         <p>{dataItinerary?.hashtags.map((hash) => {
@@ -129,12 +129,12 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
                         })}</p>
                         <div className='w-full h-10'>
                             {favorites?.find(favorite => favorite._id == dataItinerary._id) ?
-                                <button onClick={() => deleteFromFavorite()} className='w-3/12 h-full border-2 hover:bg-[#2dc77fa8] bg-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
+                                <button onClick={() => deleteFromFavorite()} className='w-4/12 lg:w-3/12 h-full border-2 hover:bg-[#2dc77fa8] bg-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
                                     <img src={save} alt="" />
                                     <p className='text-xl font-semibold text-white'>Saved</p>
                                 </button>
                                 :
-                                <button onClick={() => redirect(addToFavorite(), 'You must be logged to save this itinerary!')} className='w-3/12 h-full border-2 hover:bg-[#2dc77f] border-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
+                                <button onClick={() => redirect(addToFavorite(), 'You must be logged to save this itinerary!')} className='w-4/12 lg:w-3/12 h-full border-2 hover:bg-[#2dc77f] border-[#2dc77f] rounded-xl flex items-center justify-center gap-2'>
                                     <img src={notSave} alt="" />
                                     <p className='text-xl font-semibold text-black'>Save</p>
                                 </button>
@@ -146,9 +146,9 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
 
                 <div className='w-full px-5 py-5 pb-10 border-y flex flex-col gap-5'>
                     <h2 className='text-2xl font-semibold'>Activities</h2>
-                    <div className='w-full flex flex-col items-center gap-5 px-5'>
+                    <div className='w-full flex flex-col items-center gap-5 px-2 lg:px-5'>
                         {dataItinerary?.activities.map((activity) => {
-                            return <div className='w-full flex flex-col gap-2'>
+                            return <div className='w-full flex flex-col gap-1 lg:gap-2'>
                                 <Carrousel data={activity.photo} classes={'h-[20vh] w-full rounded-xl object-cover'} buttonsClasses={'hidden'} />
                                 <h3 className='text-2xl font-semibold'>{activity.name}</h3>
                                 <p className='text-zinc-400'>{activity.ubication}</p>

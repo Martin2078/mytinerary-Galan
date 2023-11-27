@@ -119,17 +119,17 @@ const CommentForm = () => {
   }, [])
 
   return (
-    <div className='w-screen h-screen flex'>
-      <div className='w-4/12 h-full flex flex-col items-center justify-center px-10'>
-        <div className='w-full h-4/6 flex flex-col items-center justify-center border-r gap-10'>
+    <div className='w-screen h-full lg:h-screen flex flex-col lg:flex-row '>
+      <div className='w-full lg:w-4/12 mt-[8vh] lg:mt-0 h-full flex flex-col items-center justify-center px-2 lg:px-10'>
+        <div className='w-full h-4/6 md:5/6 flex flex-col items-center justify-center lg:border-r gap-10'>
           <h1 className='text-center text-4xl font-semibold'>Tell us your experience in:</h1>
-          <div className='w-5/6 h-[40vh] border py-2 px-2 flex flex-col items-center gap-4 rounded-xl'>
+          <div className='w-5/6 md:w-4/6 h-3/5 border py-2 px-2 flex flex-col items-center gap-2 lg:gap-4 rounded-xl'>
             <p className='text-2xl font-semibold'>{itineraryData?.title}</p>
             <img className='w-full rounded-xl' src={itineraryData?.photo} alt="" />
-            <div className='w-full px-4 flex flex-col gap-1'>
+            <div className='w-full px-1 lg:px-4 flex flex-col gap-1'>
               <p className='text-xl'>From:</p>
               <div className='flex items-start gap-2'>
-                <img className='h-auto lg:h-[4vh] w-[10vw] lg:w-[3vw] object-cover object-center rounded-full' src={itineraryData?.userId.photo} alt="" />
+                <img className='h-[5vh] lg:h-[4vh] w-[11vw] md:w-[5vw] lg:w-[3vw] object-cover object-center rounded-full' src={itineraryData?.userId.photo} alt="" />
                 <p className='font-semibold'>{itineraryData?.userId.name} {itineraryData?.userId.surname}</p>
               </div>
             </div>
@@ -138,15 +138,15 @@ const CommentForm = () => {
         </div>
       </div>
 
-      <div className='w-8/12 h-full overflow-y-auto pt-[10vh]'>
-        <form onSubmit={(e) => createComment(e)} className='flex flex-col gap-6' action="">
+      <div className='w-full lg:w-8/12 h-full lg:overflow-y-auto pt-[5vh] lg:pt-[10vh]'>
+        <form onSubmit={(e) => createComment(e)} className='w-full flex flex-col px-5 lg:px-0 gap-6' action="">
 
-          <div className='w-8/12 flex flex-col gap-4'>
+          <div className='w-full lg:w-8/12 flex flex-col gap-4'>
             <p className='font-semibold text-xl'>Value your experience</p>
-            <div className='flex items-center w-8/12'>
-              <div className='flex gap-2 w-4/6 '>
+            <div className='flex items-center gap-2 lg:gap-0 w-full lg:w-10/12 xl:w-8/12'>
+              <div className='flex gap-2 w-fit lg:w-4/6 '>
                 {valoration.map((val, index) => {
-                  return <span onClick={() => setCommentData({ ...commentData, valoration: { value: val.value, textValue: val.textValue } })} className={`w-10 h-10 rounded-full border border-black ${val.value <= commentData.valoration.value ? "bg-[#2dc77f]" : "bg-[white]"} hover:bg-[#2dc77f]`}></span>
+                  return <span onClick={() => setCommentData({ ...commentData, valoration: { value: val.value, textValue: val.textValue } })} className={`w-9 lg:w-10 h-9 lg:h-10 rounded-full border border-black ${val.value <= commentData.valoration.value ? "bg-[#2dc77f]" : "bg-[white]"} hover:bg-[#2dc77f]`}></span>
                 })}
               </div>
               <p className='font-semibold'>{commentData.valoration.value == undefined ? "" : commentData?.valoration.textValue}</p>
@@ -156,19 +156,19 @@ const CommentForm = () => {
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Title</label>
-            <input maxLength={80} onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title && "border-red-600"} w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
-            <div className='w-8/12 flex justify-between'>
-              <p className={`text-sm text-red-600 opacity-0 ${commentError.title && "opacity-100"}`}>* Obligatory field</p>
-              <p className='font-light text-sm'>{commentData.title.length} of 80 characters maximum</p>
+            <input maxLength={80} onChange={(e) => setCommentData({ ...commentData, title: e.target.value })} type="text" min={4} max={100} className={`border ${commentError.title && "border-red-600"} md:w-11/12 w-full lg:w-8/12 px-2 py-2 rounded-lg`} placeholder='Write a title for your experience' />
+            <div className='w-full md:w-11/12 lg:w-8/12 flex justify-between'>
+              <p className={`text-xs lg:text-sm text-red-600 opacity-0 ${commentError.title && "opacity-100"}`}>* Obligatory field</p>
+              <p className='font-light text-xs lg:text-sm'>{commentData.title.length} of 80 characters maximum</p>
             </div>
           </fieldset>
 
           <fieldset className='flex flex-col gap-4'>
             <label className='font-semibold text-xl'>Message</label>
-            <textarea minLength={100} onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
-            <div className='w-8/12 flex justify-between'>
-              <p className={`text-sm text-red-600 opacity-0 ${commentError.text && "opacity-100"}`}>* Must have almost 100 characters</p>
-              <p className='font-light text-sm'>{commentData.text.length} of 100 characters minimum</p>
+            <textarea minLength={100} onChange={(e) => setCommentData({ ...commentData, text: e.target.value })} placeholder='The restaurant was so good...' name="" id="" className={`w-full  md:w-11/12 lg:w-8/12 h-[20vh] border ${commentError.text && "border-red-600"} px-2 py-1 resize-none rounded-lg`}></textarea>
+            <div className='w-full md:w-11/12 lg:w-8/12 flex justify-between'>
+              <p className={`text-xs lg:text-sm text-red-600 opacity-0 ${commentError.text && "opacity-100"}`}>* Must have almost 100 characters</p>
+              <p className='font-light text-xs lg:text-sm'>{commentData.text.length} of 100 characters minimum</p>
             </div>
           </fieldset>
 
@@ -177,16 +177,16 @@ const CommentForm = () => {
             <p className='text-xl font-semibold'>Photo</p>
             {urlPhotos.length > 0 ?
               <div className='w-full h-[25vh] flex flex-col gap-2'>
-                <div className='w-full h-5/6 flex gap-5 overflow-x-auto'>
+                <div className='w-full h-5/6 md:h-4/6 flex gap-5 overflow-x-auto'>
                   {renderPhotos()}
                 </div>
-                <div className='w-2/6 h-1/6 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
+                <div className='w-full  md:w-2/6 lg:w-1/6 h-1/6 bg-[#2dc77f] border flex items-center rounded-xl justify-center relative'>
                   <p className='font-semibold text-white absolute'>Change</p>
                   <input onChange={(e) => getPhotos(e)}  accept='.jpeg,.png,.jpg' className='w-full h-full opacity-0 ' type="file" multiple />
                 </div>
               </div>
               :
-              <div className='bg-gray-100 relative w-8/12 h-[20vh] border flex items-center justify-center rounded-lg'>
+              <div className='bg-gray-100 relative w-full md:w-11/12 lg:w-8/12 h-[20vh] border flex items-center justify-center rounded-lg'>
                 <input onChange={(e) => getPhotos(e)} className='w-full h-full opacity-0 z-10' type="file" multiple accept='.jpeg,.png,.jpg' />
                 <div className='flex flex-col items-center justify-center absolute z-0'>
                   <p className=''>Upload one or more photos!</p>
@@ -197,8 +197,8 @@ const CommentForm = () => {
               </div>}
           </div>
 
-          <div className='w-8/12 h-[10vh] flex items-center justify-start px-2 '>
-            <button className='bg-[#2dc77f] rounded-lg w-1/3 hover:scale-105'><p className='text-xl px-2 py-1  text-white font-semibold'>Comment</p></button>
+          <div className='w-full lg:w-8/12 h-[10vh] flex items-center justify-start px-2 '>
+            <button className='bg-[#2dc77f] rounded-lg w-full lg:w-1/3 hover:scale-105'><p className='text-xl px-2 py-1  text-white font-semibold'>Comment</p></button>
           </div>
 
 

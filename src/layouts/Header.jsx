@@ -13,6 +13,8 @@ import close from '../assets/close.png'
 import myItineraries from '../assets/myItineraries.png'
 import Favorites from '../components/Favorites'
 import { GoogleLogout } from '@stack-pulse/next-google-login'
+
+
 const Header = () => {
   const home = useMatch('/')
   const cities = useMatch('/Cities')
@@ -26,21 +28,6 @@ const Header = () => {
   const navigate = useNavigate()
   const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
 
-  // const { signOut, loaded } = useGoogleLogout({
-  //   jsSrc,
-  //   onFailure,
-  //   clientId,
-  //   cookiePolicy,
-  //   loginHint,
-  //   hostedDomain,
-  //   fetchBasicProfile,
-  //   discoveryDocs,
-  //   uxMode,
-  //   redirectUri,
-  //   scope,
-  //   accessType,
-  //   onLogoutSuccess
-  // })
   function DropdownItem({ img, text, link }) {
     return (
       <Link to={link}>
@@ -52,6 +39,9 @@ const Header = () => {
     )
   }
 
+  const onFailure=(res)=>{
+    console.log(res);
+  }
   async function LogOutFunction() {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     const response = axios.post('http://localhost:8080/auth/SignOut', null, headers)
@@ -69,6 +59,7 @@ const Header = () => {
   const handleResize = () => {
     setScreenWidth(window.innerWidth)
   }
+
   useEffect(() => {
     setOpenMenu(false)
     window.addEventListener("resize", handleResize);
@@ -106,7 +97,7 @@ const Header = () => {
               <GoogleLogout render={(renderProps)=>
                               <button onClick={renderProps.onClick} disabled={renderProps.disabled}><p className='text-white'>LogOut</p></button>
                             } clientId={clientID} 
-              buttonText="Logout" onLogoutSuccess={LogOutFunction}/>
+              buttonText="Logout" onLogoutSuccess={LogOutFunction} onFailure={onFailure}/>
                 <button onClick={()=>setOpenFavorites(true)}>
                   <img className='h-auto lg:h-[4vh] w-[10vw] lg:w-[3vw] object-cover object-center rounded-full' src={user.photo} alt="" />
                 </button>
@@ -137,7 +128,7 @@ const Header = () => {
                     <GoogleLogout render={(renderProps)=>
                     <button onClick={renderProps.onClick} disabled={renderProps.disabled}><DropdownItem img={logOut} text={"Log Out"} /></button>
                   } clientId={clientID} 
-              buttonText="Logout" onLogoutSuccess={LogOutFunction}/>
+              buttonText="Logout" onLogoutSuccess={LogOutFunction} onFailure={onFailure}/>
                   </ul>
                 </div>}
 
