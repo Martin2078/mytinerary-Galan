@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 const CityItinerary = ({itinerary,setCityDetails,setDataItinerary}) => {
+    console.log(itinerary);
     return (
         <div onClick={()=>{setDataItinerary(itinerary);setCityDetails(true)}} className='w-full md:w-[45vw] px-4 lg:px-0 lg:w-[40vw] xl:w-[30vw] h-[40vh] shadow-md rounded-lg  cursor-pointer'>
             <img className='w-full h-[28vh] object-cover rounded-lg hover:opacity-90' src={itinerary?.photo} alt="" />
@@ -12,7 +13,8 @@ const CityItinerary = ({itinerary,setCityDetails,setDataItinerary}) => {
                     for (let i = 0; i < bill; i++) {
                         template.push("$")
                     }
-                    if (index == 0 && itinerary.price.lenght>1) {
+                    if (index == 0 && itinerary.price.length>1) {
+                        console.log("entre");
                         template.push("-")
                     }
                     return template

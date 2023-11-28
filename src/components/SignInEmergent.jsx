@@ -47,13 +47,13 @@ const SignInEmergent = ({ setLogged }) => {
             password: res.profileObj.googleId
         }
         const response = axios.post('http://localhost:8080/auth/SignIn', object)
-        console.log(response);
+        
         toast.promise(response, {
             loading: 'Getting user',
             success: (data) => data.data.message,
             error: (data) => data.response.data.error
         });
-        console.log(response);
+        
         response.then((res) => {
             localStorage.setItem("token", res.data.response.token)
             localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
@@ -68,7 +68,7 @@ const SignInEmergent = ({ setLogged }) => {
 
 
     const onFailure = () => {
-        console.log(res);
+        toast.error("Error loggin")
     }
 
     return (

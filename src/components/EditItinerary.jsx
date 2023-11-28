@@ -3,85 +3,91 @@ import closeBlack from '../assets/closeBlack.png'
 import add from '../assets/add.png'
 import axios from 'axios'
 import _ from 'lodash'
-import  isEqual  from 'lodash/isEqual'
+import isEqual from 'lodash/isEqual'
+import { useDispatch, useSelector } from 'react-redux'
 
 
-const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
+const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
+    console.log(itineraryInfo);
+    const dispatch=useDispatch()
+    const citiesStore=useSelector(store=>store.citiesReducer)
+    const [cities,setCities]=useState([])
     const [changes, setChanges] = useState({})
     const hashtagRef = useRef()
-    const [changesError,setChangesError]=useState({
-        title:false,
-        duration:false,
-        price:false,
-        hashtags:false,
+    const [changesError, setChangesError] = useState({
+        title: false,
+        duration: false,
+        price: false,
+        hashtags: false,
+        cityId:false
     })
     function exitConfirmation() {
-        let changeOnActivities=false
-        if (changes.activities.length!==itineraryInfo.activities.length) {
-            changeOnActivities=true
-        }else{
-            let equals=changes.activities.map((activity,index)=>{
-                if (isEqual(activity,itineraryInfo.activities[index])) {
+        let changeOnActivities = false
+        if (changes.activities.length !== itineraryInfo.activities.length) {
+            changeOnActivities = true
+        } else {
+            let equals = changes.activities.map((activity, index) => {
+                if (isEqual(activity, itineraryInfo.activities[index])) {
                     return true
-                }else{
+                } else {
                     return false
                 }
             })
-        
-            if (equals.some((equal)=>equal===false)) {
-                changeOnActivities=true
-                console.log("si");
+
+            if (equals.some((equal) => equal === false)) {
+                changeOnActivities = true
+
             }
         }
 
-        if (changeOnActivities || changes.price || changes.title || changes.duration || !changes.hashtags.every((value,index)=>value===itineraryInfo.hashtags[index])) {
-            toast.custom((t)=>(
+        if (changeOnActivities || changes.price || changes.title || changes.duration || !changes.hashtags.every((value, index) => value === itineraryInfo.hashtags[index])) {
+            toast.custom((t) => (
                 <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} px-5 py-2 text-center max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 flex-col items-center gap-2`}>
-                <div className='w-full'>
-                <p className='text-2xl font-semibold'>There are unsaved changes</p>
-                <p className='text-xl'>Are you sure you want to exit without saving?</p>
+                    <div className='w-full'>
+                        <p className='text-2xl font-semibold'>There are unsaved changes</p>
+                        <p className='text-xl'>Are you sure you want to exit without saving?</p>
+                    </div>
+                    <div className='w-full h-[5vh] flex justify-evenly'>
+                        <button onClick={() => toast.dismiss(t.id)} className='w-1/3 h-full border rounded-lg bg-red-600'><p className='text-white font-semibold text-xl'>No</p></button>
+                        <button onClick={() => { toast.dismiss(t.id); setEdit(false) }} className='w-1/3 h-full border rounded-lg bg-[#2dc77f]'><p className='text-white font-semibold text-xl'>Yes</p></button>
+                    </div>
                 </div>
-                 <div className='w-full h-[5vh] flex justify-evenly'>
-                   <button onClick={()=>toast.dismiss(t.id)} className='w-1/3 h-full border rounded-lg bg-red-600'><p className='text-white font-semibold text-xl'>No</p></button>
-                   <button onClick={()=>{toast.dismiss(t.id);setEdit(false)}} className='w-1/3 h-full border rounded-lg bg-[#2dc77f]'><p className='text-white font-semibold text-xl'>Yes</p></button>
-                 </div>
-               </div>
-           ))
-        }else{
+            ))
+        } else {
             setEdit(false)
         }
     }
 
     async function editFunction() {
         setChangesError({
-            title: changes.title && changes.title.length<4 ? changesError.title=true : changesError.title=false ,
-            duration: changes.duration && changes.duration<5 || changes.duration>1440 ? changesError.duration=true : changesError.duration=false ,
-            price: changes.price && changes.price.length<1 ? changesError.price=true : changesError.price=false ,
-            hashtags: changes.hashtags?.length<3 ? changesError.hashtags=true : changesError.hashtags=false ,
+            title: changes.title && changes.title.length < 4 ? changesError.title = true : changesError.title = false,
+            duration: changes.duration && changes.duration < 5 || changes.duration > 1440 ? changesError.duration = true : changesError.duration = false,
+            price: changes.price && changes.price.length < 1 ? changesError.price = true : changesError.price = false,
+            hashtags: changes.hashtags?.length < 3 ? changesError.hashtags = true : changesError.hashtags = false,
+            cityId: changes.cityId && changes.cityId == "" 
         })
-        if (changesError.title === true || changesError.duration ===true || changesError.price === true || changesError.hashtags === true ) {
+        if (changesError.title === true || changesError.duration === true || changesError.price === true || changesError.hashtags === true) {
             return
         }
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        let response= axios.put(`http://localhost:8080/itineraries/${itineraryInfo._id}`,changes,headers)
+        let response = axios.put(`http://localhost:8080/itineraries/${itineraryInfo._id}`, changes, headers)
         toast.promise(response, {
             loading: 'making changes',
             success: (data) => data.data.message,
-            error:(data)=> data.response.data.error
-          });
-        response.then(()=>{
+            error: (data) => data.response.data.error
+        });
+        response.then(() => {
             setTimeout(() => {
                 setEdit(false)
             }, 1500);
         })
     }
 
-    function changeActivity(e,index,property) {
-        let newActivity=changes.activities
-        newActivity[index][property]=e.target.value
-        setChanges({...changes,activities:newActivity})
-        console.log(changes);
-        console.log(itineraryInfo);
+    function changeActivity(e, index, property) {
+        let newActivity = changes.activities
+        newActivity[index][property] = e.target.value
+        setChanges({ ...changes, activities: newActivity })
+
     }
 
     function changePrice(e, position) {
@@ -94,7 +100,7 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
                     return val
                 }
             })
-            console.log(newPrice);
+
             setChanges({ ...changes, price: newPrice })
             return
         }
@@ -103,14 +109,14 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
 
     function addHashtag() {
         let hashtagName = hashtagRef.current.value.replaceAll(" ", "")
-        
+
         if (changes.hashtags.length < 8) {
             let startWith = hashtagName.slice(0, 1)
             if (startWith !== "#") {
                 hashtagName = "#" + hashtagName
             }
             if (hashtagName.length >= 3) {
-                setChanges({...changes,hashtags:[...changes.hashtags,hashtagName]})
+                setChanges({ ...changes, hashtags: [...changes.hashtags, hashtagName] })
                 hashtagRef.current.value = ""
             } else {
                 toast.error("Please insert text on Hashtag (min 3 characters)!")
@@ -130,18 +136,25 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
         })
     }
 
-    useEffect(()=>{
-        let itineraryClone=_.cloneDeep(itineraryInfo)
-        setChanges({...changes,hashtags:itineraryClone.hashtags,activities:itineraryClone.activities})
-        setChangesError({...changesError,activities:[itineraryClone.activities.map((activity)=>{return false})]})
-    },[])
+    useEffect(() => {
+        let itineraryClone = _.cloneDeep(itineraryInfo)
+        setChanges({ ...changes, hashtags: itineraryClone.hashtags, activities: itineraryClone.activities })
+        setChangesError({ ...changesError, activities: [itineraryClone.activities.map((activity) => { return false })] })
+    }, [])
 
+    useEffect(() => {
+        if (citiesStore.cities == null) {
+            dispatch(citiesAction())
+        } else {
+            setCities(citiesStore.cities)
+        }
+    }, [citiesStore])
 
     return (
         <div className='fixed bg-[#0000003b] top-0 left-0 z-30 w-screen h-screen flex items-center justify-center'>
 
-            <div className='w-full h-full lg:w-[90vw] xl:w-[70vw] lg:h-[90vh] bg-white rounded-xl relative flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden'>
-                <div className='w-full lg:w-2/3 lg:h-full border-r px-2 py-2 pb-10 md:pb-0'>
+            <div className='w-full h-full lg:w-[90vw] xl:w-[75vw] lg:h-[95vh] bg-white rounded-xl relative flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden'>
+                <div className='w-full lg:w-2/3 lg:h-full  border-r px-2 py-2 pb-auto pb-10 md:pb-0'>
                     <div className='w-full h-2/5'>
                         <img className='w-full h-full object-cover rounded-xl' src={itineraryInfo.photo} alt="" />
                     </div>
@@ -156,24 +169,24 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
 
                             <div className='flex flex-col'>
                                 <div className='w-10/12 flex justify-between items-center'>
-                                <label className='text-xl font-semibold'>Title</label>
-                                <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.title && "opacity-100"}`}>* Obligatory field (min 3 characters)</p>
+                                    <label className='text-xl font-semibold'>Title</label>
+                                    <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.title && "opacity-100"}`}>* Obligatory field (min 3 characters)</p>
                                 </div>
                                 <input type="text" onChange={(e) => setChanges({ ...changes, title: e.target.value })} defaultValue={itineraryInfo.title} className={`border ${changesError.title ? "border-red-600" : "border-black"} rounded-lg w-10/12 px-2 py-1`} />
                             </div>
 
                             <div className='flex flex-col'>
                                 <div className='w-10/12 flex items-center justify-between'>
-                                <label className='text-xl font-semibold'>Duration</label>
-                                <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.duration && "opacity-100"}`}>* Obligatory field (min 5 and max 1440 minutes)</p>
+                                    <label className='text-xl font-semibold'>Duration</label>
+                                    <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.duration && "opacity-100"}`}>* Obligatory field (min 5 and max 1440 minutes)</p>
                                 </div>
                                 <input type="number" onChange={(e) => setChanges({ ...changes, duration: e.target.value })} defaultValue={itineraryInfo.duration} className={`border ${changesError.duration ? "border-red-600" : "border-black"} rounded-lg px-2 py-1 w-1/4`} />
                             </div>
 
                             <div className='flex flex-col'>
                                 <div className='w-10/12 flex items-center justify-between'>
-                                <label className='text-xl font-semibold'>Price</label>
-                                <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.price && "opacity-100"}`}>* Obligatory field</p>
+                                    <label className='text-xl font-semibold'>Price</label>
+                                    <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.price && "opacity-100"}`}>* Obligatory field</p>
                                 </div>
                                 <div className='flex gap-2 items-center'>
                                     <select onChange={(e) => changePrice(e, 0)} defaultValue={itineraryInfo.price[0]} className={`w-2/5 lg:w-2/6 border rounded-lg py-1 ${changesError.price ? "border-red-600" : "border-black"}`} name="" id="">
@@ -198,10 +211,10 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
 
                             <div className='flex flex-col gap-2'>
                                 <div className='w-10/12 flex items-center justify-between'>
-                                <p className='text-xl font-semibold'>Hashtags</p>
-                                <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.hashtags && "opacity-100"}`}>* Obligatory field (min 3 hashtags)</p>
+                                    <p className='text-xl font-semibold'>Hashtags</p>
+                                    <p className={`lg:text-sm text-xs text-red-600 opacity-0 ${changesError.hashtags && "opacity-100"}`}>* Obligatory field (min 3 hashtags)</p>
                                 </div>
-                                {changes.hashtags?.length>0 && <div className='w-full min-h-[4vh] max-h-[6vh] xl:max-h-[8vh]  overflow-y-auto flex flex-wrap gap-x-4 gap-y-2'>
+                                {changes.hashtags?.length > 0 && <div className='w-full min-h-[4vh] max-h-[6vh]   overflow-y-auto flex flex-wrap gap-x-4 gap-y-2'>
                                     {changes.hashtags?.map((hash, index) => {
                                         return <div className='flex items-center gap-2 border rounded-xl px-2 h-fit py-1'>
                                             <p className='font-medium'>{hash}</p>
@@ -213,6 +226,20 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
                                     <input ref={hashtagRef} className={`w-4/6 lg:w-10/12 py-1 px-2 rounded-lg outline-none border ${changesError.hashtags ? "border-red-600" : "border-black"}`} maxLength={15} type="text" />
                                     <button onClick={() => addHashtag()} className='flex items-center px-2 gap-1 bg-[#2dc77f] rounded-xl '><img className='w-3' src={add} alt="" /><p className='text-white'>Add</p></button>
                                 </div>
+                            </div>
+                            <div className='w-full flex flex-col gap-1'>
+                                <div className='flex'>
+                                    <p className='font-semibold text-xl'>City</p>
+                                    <p className={`text-sm text-red-600 opacity-0 ${changesError.cityId && "opacity-100"}`}>* Select a city</p>
+                                </div>
+                                <select onChange={e => setChanges({ ...changes, cityId: e.target.value })} name="selectedCity" id="" className={`w-4/6 border rounded-lg py-1 ${changesError.cityId ? "border-red-600" : "border-black"}`}>
+                                    <option value={itineraryInfo.cityId._id}>{itineraryInfo.cityId.cityName}</option>
+                                    {cities?.map((city) => {
+                                        if (city._id !== itineraryInfo.cityId._id) {
+                                            return <option value={city?._id}>{city?.cityName}</option> 
+                                        }
+                                    })}
+                                </select>
                             </div>
 
                         </div>
@@ -231,15 +258,15 @@ const EditItinerary = ({ itineraryInfo, setEdit,toast,token }) => {
                             </div>
                             <div className='flex flex-col w-11/12 gap-2'>
                                 <label className='text-xl font-semibold'>Name</label>
-                                <input onChange={(e)=>changeActivity(e,index,'name')} type="text" defaultValue={activity.name} className='border px-2 py-1 rounded-lg' />
+                                <input onChange={(e) => changeActivity(e, index, 'name')} type="text" defaultValue={activity.name} className='border px-2 py-1 rounded-lg' />
                             </div>
                             <div className='flex flex-col w-11/12 gap-2'>
                                 <label className='text-xl font-semibold'>Description</label>
-                                <textarea onChange={(e)=>changeActivity(e,index,'description')} type="text" defaultValue={activity.description} className='resize-none rounded-lg border w-full px-2 py-1 h-[15vh]' />
+                                <textarea onChange={(e) => changeActivity(e, index, 'description')} type="text" defaultValue={activity.description} className='resize-none rounded-lg border w-full px-2 py-1 h-[15vh]' />
                             </div>
                             <div className='flex flex-col w-11/12 gap-2'>
                                 <label className='text-xl font-semibold'>Ubication</label>
-                                <input onChange={(e)=>changeActivity(e,index,'ubication')} type="text" defaultValue={activity.ubication} className='border px-2 py-1 rounded-lg' />
+                                <input onChange={(e) => changeActivity(e, index, 'ubication')} type="text" defaultValue={activity.ubication} className='border px-2 py-1 rounded-lg' />
                             </div>
                         </div>
                     })}

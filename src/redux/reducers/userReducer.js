@@ -11,7 +11,6 @@ const initialState={
 const profileReducer=createReducer(initialState,(builder)=>{
     builder
         .addCase(profile.logIn,(state,action)=>{
-            console.log(action.payload);
             const newState={
                 ...state,
                 user:action.payload.userFinded,

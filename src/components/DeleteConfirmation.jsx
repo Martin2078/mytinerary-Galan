@@ -6,7 +6,6 @@ const DeleteConfirmation = ({setOpenDelete,comment,toast,token,setRender}) => {
     
 
     async function deleteComment() {
-        console.log(comment);
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
         let response = await axios.delete(`http://localhost:8080/comments/${comment._id}`,headers)
         

@@ -59,7 +59,6 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
     }
     async function deleteFromFavorite() {
         let response = axios.delete(`http://localhost:8080/auth/favorites/${dataItinerary._id}`, headers)
-        console.log(response);
         toast.promise(response, {
             loading: 'Unsaving',
             success: (data) => data.data.message,
@@ -114,7 +113,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
                                 for (let i = 0; i < bill; i++) {
                                     template.push("$")
                                 }
-                                if (index == 0 && dataItinerary.price.lenght>1) {
+                                if (index == 0 && dataItinerary.price.length>1) {
                                     template.push("-")
                                 }
                                 return template

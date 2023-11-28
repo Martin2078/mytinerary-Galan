@@ -89,8 +89,6 @@ const Register = () => {
     }
 
     const newUser = axios.post('http://localhost:8080/auth/Register', userData)
-    console.log(newUser);
-
     toast.promise(newUser, {
       loading: 'Creating User',
       success: (data) => data.data.message,
