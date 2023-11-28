@@ -42,8 +42,8 @@ const CommentAuthor = ({ comment, user, token, setRender }) => {
         </div>
         {comment.photo.length > 0 && <div className='w-full h-[15vh] border flex gap-2 overflow-x-auto'>
           {comment.photo.map(image=>{
-            return <img className='h-full w-[10vw] object-cover' src={image} alt="" />
-          })}
+                    return <img className='h-full min-w-[35vw] md:min-w-[20vw] lg:w-[10vw] object-cover' src={image} alt="" />
+                  })}
         </div>}
         <div className='w-full h-[4vh] flex justify-between items-end'>
           <div className='flex gap-5 items-end'>

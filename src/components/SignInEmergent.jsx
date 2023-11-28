@@ -11,7 +11,7 @@ import GoogleLogin from '@stack-pulse/next-google-login'
 
 
 const SignInEmergent = ({ setLogged }) => {
-    const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
+    const clientID = `1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
 
     const dispatch = useDispatch()
     const [userData, setUserData] = useState({
@@ -41,10 +41,10 @@ const SignInEmergent = ({ setLogged }) => {
         })
     }
 
-    const onSuccess=(res)=>{
-        let object={
-            email:res.profileObj.email,
-            password:res.profileObj.googleId
+    const onSuccess = (res) => {
+        let object = {
+            email: res.profileObj.email,
+            password: res.profileObj.googleId
         }
         const response = axios.post('http://localhost:8080/auth/SignIn', object)
         console.log(response);
@@ -65,16 +65,16 @@ const SignInEmergent = ({ setLogged }) => {
         })
     }
 
-    
 
-    const onFailure=()=>{
+
+    const onFailure = () => {
         console.log(res);
     }
 
     return (
         <div className='absolute top-0 left-0 w-screen h-screen bg-[#0000003b] flex items-center justify-center z-50'>
             <Toaster position='top-center' />
-            <div className='w-11/12 lg:w-2/6 h-3/5 relative bg-white rounded-xl z-50 flex flex-col items-center justify-between px-10 py-5 pb-10'>
+            <div className='w-11/12 min-[425px]:w-10/12 md:w-6/12 lg:w-2/6 h-3/5 relative bg-white rounded-xl z-50 flex flex-col items-center justify-between px-10 py-5 pb-10'>
                 <button onClick={() => setLogged(false)} className='absolute top-3 right-3'><img className='w-4' src={closeBlack} alt="" /></button>
                 <h1 className='text-4xl font-semibold'>Sign In</h1>
 
@@ -97,13 +97,11 @@ const SignInEmergent = ({ setLogged }) => {
                     </div>
 
                 </form>
-                <div className='w-4/5 lg:h-1/5 h-[18vh]  flex flex-col items-center justify-end gap-4'>
-                <GoogleLogin render={renderProps=><button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
-              <img src={google} alt="" />
-              <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
-            </button>} isSignedIn={true} clientId={clientID} onSuccess={onSuccess}  onFailure={onFailure} cookiePolicy={'single_host_policy'} />
-                   
-                
+                <div className='w-full lg:h-1/5 h-[18vh]  flex flex-col items-center justify-end gap-4'>
+                    <GoogleLogin render={renderProps => <button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
+                        <img src={google} alt="" />
+                        <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
+                    </button>} isSignedIn={true} clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} cookiePolicy={'single_host_policy'} />
                 </div>
             </div>
         </div>

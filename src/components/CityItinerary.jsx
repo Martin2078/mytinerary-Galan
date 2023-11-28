@@ -12,7 +12,7 @@ const CityItinerary = ({itinerary,setCityDetails,setDataItinerary}) => {
                     for (let i = 0; i < bill; i++) {
                         template.push("$")
                     }
-                    if (index == 0) {
+                    if (index == 0 && itinerary.price.lenght>1) {
                         template.push("-")
                     }
                     return template
