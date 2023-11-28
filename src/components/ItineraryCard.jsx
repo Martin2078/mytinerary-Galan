@@ -3,7 +3,7 @@ import editIcon from '../assets/edit.png'
 import deleteIcon from '../assets/delete.png'
 import axios from 'axios'
 
-const ItineraryCard = ({ itinerary, toast,token,setRender }) => {
+const ItineraryCard = ({ itinerary, toast,token,setRender,setEdit }) => {
 
   async function deleteItinerary() {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
@@ -20,7 +20,7 @@ const ItineraryCard = ({ itinerary, toast,token,setRender }) => {
       <div className='w-full bg-[#00000085] flex items-center justify-between gap-4 px-2 py-1 z-10'>
         <h3 className='font-semibold text-white text-xl'>{itinerary?.title}</h3>
         <div className='flex items-center gap-4'>
-          <button><img className='w-5' src={editIcon} alt="" /></button>
+          <button onClick={()=>setEdit(itinerary)}><img className='w-5' src={editIcon} alt="" /></button>
           <button onClick={() => toast.custom((t) => (
             <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} px-5 py-2 text-center max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 flex-col items-center gap-2`}>
              <div className='w-full'>

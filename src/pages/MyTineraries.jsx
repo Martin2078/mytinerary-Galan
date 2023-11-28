@@ -10,6 +10,7 @@ import notItineraries from '../assets/notItineraries.jpg'
 import AddItinerary from '../components/AddItinerary'
 import { useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast'
+import EditItinerary from '../components/EditItinerary'
 
 
 const MyTineraries = () => {
@@ -35,6 +36,7 @@ const MyTineraries = () => {
     setCountries(Array.from(uniques))
     setAllCountries(Array.from(uniques))
   }
+  const [edit,setEdit]=useState(false)
 
   const responsive = {
     superLargeDesktop: {
@@ -75,10 +77,11 @@ const MyTineraries = () => {
       navigate('/SignIn')
     }
     getUserItineraries()
-  }, [])
+  }, [edit])
 
   return (
     <div className='w-full h-screen flex pt-[10vh] px-10 flex-col justify-between'>
+      {edit && <EditItinerary itineraryInfo={edit} setEdit={setEdit} toast={toast} token={token}/>}
       <Toaster position='top-center' toastOptions={{custom:{duration:Infinity}}}/>
       {createItinerary && <AddItinerary setRender={setRender} setCreateItinerary={setCreateItinerary} />}
       <button onClick={()=>setCreateItinerary(true)} className='flex items-center justify-center rounded-full fixed bottom-5 right-5 bg-[#2dc77f]'><img className='px-2 py-2' src={add} alt="" /></button>
@@ -91,8 +94,8 @@ const MyTineraries = () => {
       </div>
 
       <div className='w-full min-h-[75vh] flex flex-col items-center  gap-[5vh] '>
-        {countries?.length > 0 ? countries.map((country) => {
-          return <div className='w-[85vw] h-[30vh] shadow-md rounded-xl px-5 pt-2 flex flex-col'>
+        {countries?.length > 0 ? countries.map((country,index) => {
+          return <div key={index} className='w-[85vw] h-[30vh] shadow-md rounded-xl px-5 pt-2 flex flex-col'>
             <h2 className='text-3xl font-semibold h-[6vh]'>{country}</h2>
             <Carousel
               responsive={responsive}
@@ -119,7 +122,7 @@ const MyTineraries = () => {
             >
               {myTineraries.map((itinerary) => {
                 if (itinerary.cityId.country == country) {
-                  return <ItineraryCard setRender={setRender} itinerary={itinerary} toast={toast} token={token} />
+                  return <ItineraryCard setEdit={setEdit} setRender={setRender} itinerary={itinerary} toast={toast} token={token} />
                 }
               })}
             </Carousel>

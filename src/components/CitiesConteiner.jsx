@@ -23,7 +23,7 @@ const CitiesConteiner = ({cities,maxPages,next,prev,setPage,page}) => {
             <>
               <div className='w-full min-h-[33vh] flex flex-wrap items-start justify-center gap-x-[3vw] gap-y-[4vh]'>
                 {cities.map((city,index) => {
-                  return <div className='cursor-pointer w-[80vw] md:w-[40vw] lg:w-[20vw] h-[20vh] rounded-xl bg-white px-3 py-3 flex flex-col justify-between lg:hover:scale-110' style={{ backgroundImage: `url(${city.photo[0]})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
+                  return <div key={city?.cityName} className='cursor-pointer w-[80vw] md:w-[40vw] lg:w-[20vw] h-[20vh] rounded-xl bg-white px-3 py-3 flex flex-col justify-between lg:hover:scale-110' style={{ backgroundImage: `url(${city.photo[0]})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
                     <div className='flex flex-col gap-1'>
                       <h4 className='text-white font-bold text-lg'>{city?.cityName}</h4>
                       <div className='flex items-center gap-1'>
