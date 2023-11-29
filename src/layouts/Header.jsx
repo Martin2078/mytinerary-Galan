@@ -4,7 +4,7 @@ import SignInIcon from '../assets/SignInIcon.png'
 import profile from '../redux/actions/userAction'
 import { useDispatch, useSelector } from 'react-redux'
 import logOut from '../assets/logOut.png'
-import signIn from '../assets/signIn.png'
+import favs from '../assets/notSave.png'
 import logOutAction from '../redux/actions/logOutAction'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
@@ -22,10 +22,10 @@ const Header = () => {
   const { token, user } = useSelector(store => store.profileReducer)
   const [open, setOpen] = useState(false)
   const [openMenu, setOpenMenu] = useState(false)
-  const [openFavorites,setOpenFavorites]=useState(false)
+  const [openFavorites, setOpenFavorites] = useState(false)
   const [screenwidth, setScreenWidth] = useState(window.innerWidth)
   const navigate = useNavigate()
-  const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
+  const clientID = `1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
 
   function DropdownItem({ img, text, link }) {
     return (
@@ -38,7 +38,7 @@ const Header = () => {
     )
   }
 
- 
+
   async function LogOutFunction() {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     const response = axios.post('http://localhost:8080/auth/SignOut', null, headers)
@@ -46,7 +46,7 @@ const Header = () => {
       success: (data) => data.data.message,
       error: (data) => data.response.data.error
     });
-    response.then(()=> {
+    response.then(() => {
       dispatch(logOutAction())
       localStorage.clear()
       navigate('/')
@@ -69,7 +69,7 @@ const Header = () => {
         const objeto = {
           token: tokenStorage,
           userFinded: userStorage,
-          favorites:favoritesStorage
+          favorites: favoritesStorage
         }
         dispatch(profile.logIn(objeto))
       }
@@ -79,7 +79,7 @@ const Header = () => {
   return (
     <div className={`w-[100vw] ${openMenu ? "h-[30vh] flex-col items-center justify-evenly bg-[#000000cc]" : "h-[6vh] justify-between items-center"} z-10 bg-[#000000a4] fixed top-0 py-2 px-5 lg:px-28 flex `}>
       <Toaster position='top-center' />
-      {openFavorites && <Favorites/>}
+      {openFavorites && <Favorites setOpenFavorites={setOpenFavorites} toast={toast} token={token} />}
       <Link className='cursor-pointer' to={'/'}><h1 className='text-2xl font-semibold text-white'>MyTinerary</h1></Link>
       <div className={`flex ${openMenu ? "flex-col items-center gap-2" : "items-center justify-center gap-5"}`}>
 
@@ -91,8 +91,8 @@ const Header = () => {
             <Link to={"/MyTineraries"}><p className={`${MyTineraries != null ? "text-blue-500" : "text-white"}`}>MyTinerary</p></Link>
             {token ?
               <>
-                <button onClick={()=>LogOutFunction()}><p className='text-white'>LogOut</p></button>
-                <button onClick={()=>setOpenFavorites(true)}>
+                <button onClick={() => LogOutFunction()}><p className='text-white'>LogOut</p></button>
+                <button onClick={() => setOpenFavorites(true)}>
                   <img className='h-auto lg:h-[4vh] w-[10vw] lg:w-[3vw] object-cover object-center rounded-full' src={user.photo} alt="" />
                 </button>
               </>
@@ -118,8 +118,11 @@ const Header = () => {
                 {screenwidth >= 768 && open && <div className='w-[18vw] lg:w-[14vw] xl:w-[10vw] -translate-x-24 h-[20vh] lg:h-[16vh] bg-white rounded-xl absolute flex flex-col items-center py-2 px-4'>
                   <ul className='list-none flex flex-col justify-evenly h-full'>
                     <DropdownItem img={myItineraries} text={"MyTinery"} link={"/MyTineraries"} />
-                    <DropdownItem img={signIn} text={"Favorites"} link={"/Me"} />
-                    <button onClick={()=>LogOutFunction()}><DropdownItem img={logOut} text={"Log Out"} /></button>
+                    <button className='flex items-center gap-2' onClick={()=>setOpenFavorites(true)}>
+                      <img className='h-5' src={favs} alt="" />
+                      <p className='font-semibold'>Favorites</p>
+                    </button>
+                    <button onClick={() => LogOutFunction()}><DropdownItem img={logOut} text={"Log Out"} /></button>
 
                   </ul>
                 </div>}
