@@ -3,7 +3,6 @@ import carrouselButton from '../assets/carrouselButton.png'
 import carrouselButtonBlue from '../assets/carrouselButtonBlue.png'
 import '../style.css'
 const Carrousel = ({ data, classes, buttonsClasses }) => {
-
   const [position, setPosition] = useState(0)
   const [timeoutId, setTimeoutId] = useState(null);
   const [touchStartX, setTouchStartX] = useState(null);
@@ -25,6 +24,7 @@ const Carrousel = ({ data, classes, buttonsClasses }) => {
           setPosition(position-1)
         }
       } else if (difference < 0) {
+
         if (position===data.length-1) {
           setPosition(0)
         }else{
@@ -54,7 +54,7 @@ const Carrousel = ({ data, classes, buttonsClasses }) => {
     startTimeOut()
   },[position])
   return (
-    <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} className={`${classes}`} style={{backgroundImage:`url(${data[position]})`,backgroundRepeat:'no-repeat',backgroundSize:'cover',backgroundPosition:'center'}}>
+    <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} className={`${classes} `} style={{backgroundImage:`url(${data[position]})`,backgroundRepeat:'no-repeat',backgroundSize:'cover',backgroundPosition:'center'}}>
       
       <div className={`py-2 absolute z-50 flex bottom-[10%] lg:bottom-[5%] left-[35%] md:left-[41%] lg:left-[45%] w-[30vw] md:w-[20vw] lg:w-[10vw]  items-center justify-evenly Glassmorphism ${buttonsClasses}`}>
         {data.map((photo,index)=>{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import Description from './Description';
 import like from '../assets/like.png'
 import dislike from '../assets/dislike.png'
@@ -6,10 +6,14 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast'
 import liked from '../assets/liked.png'
 import disliked from '../assets/disliked.png'
-import { useAnimate } from 'framer-motion';
 const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
-    const [scope, animate] = useAnimate()
+    const [size,setSize]=useState('1rem')
+    const [isVisibleLike, setIsVisibleLike] = useState(false);
+    const [isVisibleDislike, setIsVisibleDislike] = useState(false);
 
+    const [isPending, startTransition] = useTransition({
+        duration:1000
+    });
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
     function valorationCircles() {
         let template = []
@@ -18,21 +22,16 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
         }
         return template
     }
-
-    function resetAnimation() {
-        animate(scope.current,{
-            scale:1
-        },{duration:0.5})
-    }
-    function animationReactions() {
-        animate(scope.current,{
-            scale:0.5
-        },{duration:0.5})
-    }
+    function toggleVisibility(action) {
+        startTransition(() => {  
+          action(true)
+        });
+        setTimeout(()=>{
+            action(false);
+        },700)
+      }
 
     async function likeComment() {
-        
-        
         if (user == null) {
             setLogged(true)
             toast.error('You must be logged to like this comment!')
@@ -48,7 +47,6 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
         }
     }
     async function dislikeComment() {
-       
         if (user == null) {
             setLogged(true)
             toast.error('You must be logged to dislike this comment!')
@@ -90,12 +88,12 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
                 })}
             </div>}
             <div className='w-full h-[5vh] lg:h-[4vh] flex gap-5 items-end'>
-                <div className='flex items-center gap-2'>
-                    <button ref={scope} className='w-4' onClick={() => likeComment()}><img  src={comment.likes.find(id => id == user?._id) ? liked : like} alt="" /></button>
+                <div className='w-[3vw] flex items-center gap-2'>
+                    <button className='' style={{width:isVisibleLike ? '0.8rem' : '1rem'}} onClick={() =>{ likeComment();toggleVisibility(setIsVisibleLike)}}><img  src={comment.likes.find(id => id == user?._id) ? liked : like} alt="" /></button>
                     <p>{comment.likes.length}</p>
                 </div>
-                <div className='flex items-center gap-2'>
-                    <button ref={scope} onClick={() => dislikeComment()}><img className='w-4' src={comment.dislikes.find(id => id == user?._id) ? disliked : dislike} alt="" /></button>
+                <div className='w-[3vw] flex items-center gap-2'>
+                    <button onClick={() => {dislikeComment();toggleVisibility(setIsVisibleDislike)}} style={{width:isVisibleDislike ? '0.8rem' : '1rem'}}><img className='w-4' src={comment.dislikes.find(id => id == user?._id) ? disliked : dislike} alt="" /></button>
                     <p>{comment.dislikes.length}</p>
                 </div>
             </div>
