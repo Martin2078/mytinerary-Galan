@@ -15,7 +15,7 @@ const ItineraryCard = ({ itinerary, toast,token,setRender,setEdit }) => {
   }
 
   return (
-    <div className='w-full md:w-[30vw] lg:w-[25vw] xl:w-[20vw] h-[20vh]  flex flex-col rounded-lg items-center justify-end relative'>
+    <div className='w-full md:w-[35vw] lg:w-[30vw] xl:w-[25vw] h-[20vh]  flex flex-col rounded-lg items-center justify-end relative'>
       <img className='absolute top-0 w-full h-full hover:opacity-90 object-cover z-0 rounded-lg' src={itinerary?.photo} alt="" />
       <div className='w-full bg-[#00000085] flex items-center justify-between gap-4 px-2 py-1 z-10'>
         <h3 className='font-semibold text-white text-xl'>{itinerary?.title}</h3>

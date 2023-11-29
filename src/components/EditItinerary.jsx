@@ -5,10 +5,11 @@ import axios from 'axios'
 import _ from 'lodash'
 import isEqual from 'lodash/isEqual'
 import { useDispatch, useSelector } from 'react-redux'
+import citiesAction from '../redux/actions/citiesAction'
 
 
 const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
-    console.log(itineraryInfo);
+    const [urlPhotos,setUrlPhotos]=useState({})
     const dispatch=useDispatch()
     const citiesStore=useSelector(store=>store.citiesReducer)
     const [cities,setCities]=useState([])
@@ -40,7 +41,7 @@ const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
             }
         }
 
-        if (changeOnActivities || changes.price || changes.title || changes.duration || !changes.hashtags.every((value, index) => value === itineraryInfo.hashtags[index])) {
+        if (changeOnActivities || changes.price || changes.photo || changes.title || changes.duration || !changes.hashtags.every((value, index) => value === itineraryInfo.hashtags[index])) {
             toast.custom((t) => (
                 <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} px-5 py-2 text-center max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 flex-col items-center gap-2`}>
                     <div className='w-full'>
@@ -64,13 +65,46 @@ const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
             duration: changes.duration && changes.duration < 5 || changes.duration > 1440 ? changesError.duration = true : changesError.duration = false,
             price: changes.price && changes.price.length < 1 ? changesError.price = true : changesError.price = false,
             hashtags: changes.hashtags?.length < 3 ? changesError.hashtags = true : changesError.hashtags = false,
-            cityId: changes.cityId && changes.cityId == "" 
         })
         if (changesError.title === true || changesError.duration === true || changesError.price === true || changesError.hashtags === true) {
             return
         }
+        const formData=new FormData()
+        if (changes.title) {
+            formData.append('title',changes.title)
+        }
+        if (changes.price) {
+            for (let i = 0; i< changes.price.length; i++) {
+                formData.append('price',changes.price[i])
+            }
+        }
+        if (changes.hashtags) {
+            for (let i = 0; i< changes.hashtags.length; i++) {
+                formData.append('hashtags',changes.hashtags[i])
+            }
+        }
+        if (changes.duration) {
+            formData.append('duration',changes.duration)
+        }
+        if (changes.photo) {
+            formData.append('photo',changes.photo)
+        }
+        if (changes.cityId) {
+            formData.append('cityId',changes.cityId)
+        }
+        if (changes.activities) {
+            changes.activities.map((activity,index)=>{
+                formData.append(`activity${index}name`,activity.name)
+                formData.append(`activity${index}description`,activity.description)
+                activity.photo.forEach((photo) => {
+                    formData.append(`activity${index}photo`,photo)
+                });
+                formData.append(`activity${index}ubication`,activity.ubication)
+            })
+        }
+
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        let response = axios.put(`http://localhost:8080/itineraries/${itineraryInfo._id}`, changes, headers)
+        let response = axios.put(`http://localhost:8080/itineraries/${itineraryInfo._id}`, formData, headers)
         toast.promise(response, {
             loading: 'making changes',
             success: (data) => data.data.message,
@@ -135,6 +169,12 @@ const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
             })]
         })
     }
+    function getPhoto(e) {
+        let img=e.target.files[0]
+        let url = URL.createObjectURL(e.target.files[0])
+        setUrlPhotos({photoItinerary:url})
+        setChanges({...changes,photo:img})
+    }
 
     useEffect(() => {
         let itineraryClone = _.cloneDeep(itineraryInfo)
@@ -155,8 +195,12 @@ const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
 
             <div className='w-full h-full lg:w-[90vw] xl:w-[75vw] lg:h-[95vh] bg-white rounded-xl relative flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden'>
                 <div className='w-full lg:w-2/3 lg:h-full  border-r px-2 py-2 pb-auto pb-10 md:pb-0'>
-                    <div className='w-full h-2/5'>
-                        <img className='w-full h-full object-cover rounded-xl' src={itineraryInfo.photo} alt="" />
+                    <div className='w-full h-2/5 relative'>
+                        <img className='w-full h-full object-cover rounded-xl' src={urlPhotos.photoItinerary? urlPhotos.photoItinerary : itineraryInfo.photo} alt="" />
+                        <div className='w-full h-full rounded-xl flex items-center justify-center absolute top-0 left-0 bg-[#0000003b] opacity-0 hover:opacity-100'>
+                            <input onChange={e=>getPhoto(e)} className='w-full h-full opacity-0' type="file" />
+                            <p className='text-white text-3xl absolute font-semibold'>Change Photo</p>
+                        </div>
                     </div>
                     <div className='w-full h-3/5 relative '>
 
