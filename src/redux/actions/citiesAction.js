@@ -3,7 +3,7 @@ import axios from "axios";
 
 const citiesAction=createAsyncThunk('citiesAction',async()=>{
     try {
-        let response = await axios.get('http://localhost:8080/cities')
+        let response = await axios.get('https://mytinerarybackend-7pod.onrender.com/cities')
         return response.data.response
     } catch (error) {
         

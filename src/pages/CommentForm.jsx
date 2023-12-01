@@ -71,7 +71,7 @@ const CommentForm = () => {
       formData.append(`photo`,img)
     })
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    let response = axios.post('http://localhost:8080/comments',formData,headers)
+    let response = axios.post('https://mytinerarybackend-7pod.onrender.com/comments',formData,headers)
     toast.promise(response, {
       loading: 'Posting comment',
       success: (data) => data.data.message,
@@ -86,7 +86,7 @@ const CommentForm = () => {
   }
 
   async function getItinerary() {
-    let response = await axios.get(`http://localhost:8080/itineraries/one/${id}`)
+    let response = await axios.get(`https://mytinerarybackend-7pod.onrender.com/itineraries/one/${id}`)
     setItineraryData(response.data.response)
   }
 

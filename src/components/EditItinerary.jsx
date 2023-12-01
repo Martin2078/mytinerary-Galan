@@ -104,7 +104,7 @@ const EditItinerary = ({ itineraryInfo, setEdit, toast, token }) => {
         }
 
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        let response = axios.put(`http://localhost:8080/itineraries/${itineraryInfo._id}`, formData, headers)
+        let response = axios.put(`https://mytinerarybackend-7pod.onrender.com/itineraries/${itineraryInfo._id}`, formData, headers)
         toast.promise(response, {
             loading: 'making changes',
             success: (data) => data.data.message,

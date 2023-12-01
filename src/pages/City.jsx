@@ -23,11 +23,11 @@ const City = () => {
   const [dataItinerary, setDataItinerary] = useState()
 
   async function getCity() {
-    let response = await axios.get(`http://localhost:8080/cities/${id}`)
+    let response = await axios.get(`https://mytinerarybackend-7pod.onrender.com/cities/${id}`)
     setInfoCity(response.data.response)
   }
   async function getItineraries() {
-    let response = await axios.get(`http://localhost:8080/itineraries/${id}`)
+    let response = await axios.get(`https://mytinerarybackend-7pod.onrender.com/itineraries/${id}`)
     setItineraries(response.data.response)
   }
   const handleResize = () => {

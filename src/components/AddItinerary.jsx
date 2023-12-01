@@ -72,7 +72,7 @@ const AddItinerary = ({ setCreateItinerary,setRender }) => {
             formData.append(`activity${index}ubication`,activity.ubication)
         })
         let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-        let response = axios.post('http://localhost:8080/itineraries', formData, headers)
+        let response = axios.post('https://mytinerarybackend-7pod.onrender.com/itineraries', formData, headers)
         toast.promise(response, {
             loading: 'Posting itinerary',
             success: (data) => data.data.message,

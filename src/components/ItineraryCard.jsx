@@ -7,7 +7,7 @@ const ItineraryCard = ({ itinerary, toast,token,setRender,setEdit }) => {
 
   async function deleteItinerary() {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    let response = await axios.delete(`http://localhost:8080/itineraries/${itinerary._id}`,headers)
+    let response = await axios.delete(`https://mytinerarybackend-7pod.onrender.com/itineraries/${itinerary._id}`,headers)
     if (response.data.success==true) {
       toast.success(response.data.message)
       setRender(prev=>!prev)

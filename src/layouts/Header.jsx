@@ -41,7 +41,7 @@ const Header = () => {
 
   async function LogOutFunction() {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    const response = axios.post('http://localhost:8080/auth/SignOut', null, headers)
+    const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignOut', null, headers)
     toast.promise(response, {
       success: (data) => data.data.message,
       error: (data) => data.response.data.error

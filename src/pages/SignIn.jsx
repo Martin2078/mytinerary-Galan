@@ -25,7 +25,7 @@ const SignIn = () => {
   async function getEmail() {
     setMail(mail.toLowerCase())
     const email = mail.toLowerCase()
-    const finded = axios.get(`http://localhost:8080/auth?email=${email}`)
+    const finded = axios.get(`https://mytinerarybackend-7pod.onrender.com/auth?email=${email}`)
     toast.promise(finded, {
       loading: 'Loading',
       success: (data) => data.data.message,
@@ -43,7 +43,7 @@ const SignIn = () => {
       email: res.profileObj.email,
       password: res.profileObj.googleId
     }
-    const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
+    const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', objeto)
     toast.promise(response, {
       loading: 'Getting user',
       success: (data) => data.data.message,
@@ -67,7 +67,7 @@ const SignIn = () => {
       email: mail,
       password: pass
     }
-    const response = axios.post('http://localhost:8080/auth/SignIn', objeto)
+    const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', objeto)
     toast.promise(response, {
       loading: 'Getting user',
       success: (data) => data.data.message,

@@ -44,7 +44,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
     }
 
     async function addToFavorite() {
-        let response = axios.post(`http://localhost:8080/auth/favorites/${dataItinerary._id}`, null, headers)
+        let response = axios.post(`https://mytinerarybackend-7pod.onrender.com/auth/favorites/${dataItinerary._id}`, null, headers)
         toast.promise(response, {
             loading: 'Saving',
             success: (data) => data.data.message,
@@ -58,7 +58,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
 
     }
     async function deleteFromFavorite() {
-        let response = axios.delete(`http://localhost:8080/auth/favorites/${dataItinerary._id}`, headers)
+        let response = axios.delete(`https://mytinerarybackend-7pod.onrender.com/auth/favorites/${dataItinerary._id}`, headers)
         toast.promise(response, {
             loading: 'Unsaving',
             success: (data) => data.data.message,
@@ -84,7 +84,7 @@ const ItineraryDetail = ({ token, user, dataItinerary, setDataItinerary, setCity
     }
 
     async function getComments() {
-        let response = await axios.get(`http://localhost:8080/comments/${dataItinerary._id}`)
+        let response = await axios.get(`https://mytinerarybackend-7pod.onrender.com/comments/${dataItinerary._id}`)
         setDataItinerary({ ...dataItinerary, comments: response.data.response })
         averageRating(response.data.response)
     }

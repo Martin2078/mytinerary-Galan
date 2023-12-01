@@ -41,7 +41,7 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
             commentId: comment._id,
             userId: user._id
         }
-        let response = await axios.put(`http://localhost:8080/comments/like`, object, headers)
+        let response = await axios.put(`https://mytinerarybackend-7pod.onrender.com/comments/like`, object, headers)
         if (response.data.success == true) {
             setRender(prev => !prev)
         }
@@ -57,7 +57,7 @@ const CommentNotAuthor = ({ comment, setRender, setLogged, user, token }) => {
             commentId: comment._id,
             userId: user._id
         }
-        let response = await axios.put(`http://localhost:8080/comments/dislike`, object, headers)
+        let response = await axios.put(`https://mytinerarybackend-7pod.onrender.com/comments/dislike`, object, headers)
         if (response.data.success == true) {
             setRender(prev => !prev)
         }

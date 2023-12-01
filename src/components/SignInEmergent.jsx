@@ -24,7 +24,7 @@ const SignInEmergent = ({ setLogged }) => {
     async function SignInUser(e) {
         e.preventDefault()
         setUserData({ ...userData, email: userData.email.toLowerCase() })
-        const response = axios.post('http://localhost:8080/auth/SignIn', userData)
+        const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', userData)
         toast.promise(response, {
             loading: 'Getting user',
             success: (data) => data.data.message,
@@ -46,7 +46,7 @@ const SignInEmergent = ({ setLogged }) => {
             email: res.profileObj.email,
             password: res.profileObj.googleId
         }
-        const response = axios.post('http://localhost:8080/auth/SignIn', object)
+        const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', object)
         
         toast.promise(response, {
             loading: 'Getting user',

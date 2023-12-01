@@ -13,7 +13,7 @@ const Favorites = ({ setOpenFavorites,toast,token }) => {
 
 async function deleteFromFavorite(id) {
     let headers = { headers: { 'Authorization': `Bearer ${token}` } }
-    let response = axios.delete(`http://localhost:8080/auth/favorites/${id}`, headers)
+    let response = axios.delete(`https://mytinerarybackend-7pod.onrender.com/auth/favorites/${id}`, headers)
     toast.promise(response, {
         loading: 'Unsaving',
         success: (data) => data.data.message,

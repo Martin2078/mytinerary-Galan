@@ -24,7 +24,7 @@ const MyTineraries = () => {
 
   
   async function getUserItineraries() {
-    const response = await axios.get(`http://localhost:8080/itineraries/me/${user._id}`)
+    const response = await axios.get(`https://mytinerarybackend-7pod.onrender.com/itineraries/me/${user._id}`)
     setMyTineraries(response.data.response)
     const allCountries = response.data.response.map((itinerary) => {
       return itinerary.cityId.country

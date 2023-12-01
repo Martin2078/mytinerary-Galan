@@ -61,7 +61,7 @@ const Register = () => {
     formData.append('email', data.email)
     formData.append('password', data.password)
     formData.append('photo', data.photo)
-    const newUser = axios.post('http://localhost:8080/auth/Register', formData)
+    const newUser = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/Register', formData)
     toast.promise(newUser, {
       loading: 'Creating User',
       success: (data) => data.data.message,
@@ -88,7 +88,7 @@ const Register = () => {
       photo: response.profileObj.imageUrl
     }
 
-    const newUser = axios.post('http://localhost:8080/auth/Register', userData)
+    const newUser = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/Register', userData)
     toast.promise(newUser, {
       loading: 'Creating User',
       success: (data) => data.data.message,
