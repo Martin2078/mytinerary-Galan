@@ -149,7 +149,7 @@ const SignIn = () => {
             </div>}
             <div className='w-full'>
             <p className='text-[#999] text-xl font-semibold'>Test account:</p>
-            <p className='text-[#999]'>MyTinerary@gmail.com</p>
+            <p className='text-[#999]'>mytinerary@gmail.com</p>
             <p className='text-[#999]'>hola1234</p>
             </div>
           <div className='w-full h-[8vh] border-t flex flex-col items-center justify-end gap-4'>

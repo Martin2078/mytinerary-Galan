@@ -93,7 +93,7 @@ const SignInEmergent = ({ setLogged }) => {
                 </form>
                 <div className='w-full absolute top-[65%] left-[10%]'>
             <p className='text-[#999] text-xl font-semibold'>Test account:</p>
-            <p className='text-[#999]'>MyTinerary@gmail.com</p>
+            <p className='text-[#999]'>mytinerary@gmail.com</p>
             <p className='text-[#999]'>hola1234</p>
             </div>
                 <div className='w-full lg:h-1/5 h-[18vh]  flex flex-col items-center justify-end gap-4'>
