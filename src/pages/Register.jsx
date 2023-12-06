@@ -5,7 +5,8 @@ import toast, { Toaster } from 'react-hot-toast'
 import showPassword from '../assets/showPassword.png'
 import notShowPassword from '../assets/notShowPassword.png'
 import RegisterVideo from '../assets/RegisterVideo.mp4'
-import GoogleLogin from '@stack-pulse/next-google-login'
+import { GoogleLogin } from '@react-oauth/google'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import google from '../assets/google.png'
 const Register = () => {
   const clientID = `1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
@@ -78,17 +79,8 @@ const Register = () => {
     setPhotoUrl(url)
   }
 
-  async function onSuccess(response) {
-
-    let userData = {
-      name: response.profileObj.givenName,
-      surname: response.profileObj.familyName,
-      email: response.profileObj.email,
-      password: response.profileObj.googleId,
-      photo: response.profileObj.imageUrl
-    }
-
-    const newUser = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/Register', userData)
+  async function onSuccess(res) {
+    const newUser = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/Register',res)
     toast.promise(newUser, {
       loading: 'Creating User',
       success: (data) => data.data.message,
@@ -97,8 +89,6 @@ const Register = () => {
     newUser.then(() => {
       setTimeout(() => { navigate('/SignIn') }, 2000)
     })
-
-
   }
 
   const onFailure = () => {
@@ -155,11 +145,9 @@ const Register = () => {
               </div>
             </div>
             <div className='w-full h-[8vh] flex flex-col items-center justify-end border-t gap-4'>
-              <GoogleLogin render={renderProps =>
-                <button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
-                  <img src={google} alt="" />
-                  <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignUp with Google</p>
-                </button>} buttonText='Sign up with google' className='w-full flex justify-center' clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} isSignedIn={true} cookiePolicy={"single_host_policy"} />
+              <GoogleOAuthProvider clientId={clientID}>
+              <GoogleLogin buttonText='Sign up with google' className='w-full flex justify-center' onSuccess={onSuccess} onFailure={onFailure} isSignedIn={true} cookiePolicy={"single_host_policy"} />
+              </GoogleOAuthProvider>
 
 
             </div>

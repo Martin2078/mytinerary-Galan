@@ -7,7 +7,7 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import profile from '../redux/actions/userAction'
 import { useDispatch } from 'react-redux'
-import GoogleLogin from '@stack-pulse/next-google-login'
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 
 
 const SignInEmergent = ({ setLogged }) => {
@@ -42,26 +42,20 @@ const SignInEmergent = ({ setLogged }) => {
     }
 
     const onSuccess = (res) => {
-        let object = {
-            email: res.profileObj.email,
-            password: res.profileObj.googleId
-        }
-        const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', object)
-        
+        const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/GoogleSignIn',res)
         toast.promise(response, {
-            loading: 'Getting user',
-            success: (data) => data.data.message,
-            error: (data) => data.response.data.error
+          loading: 'Getting user',
+          success: (data) => data.data.message,
+          error:(data)=> data.response.data.error
         });
-        
-        response.then((res) => {
-            localStorage.setItem("token", res.data.response.token)
-            localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
-            localStorage.setItem("favorites", JSON.stringify(res.data.response.userFinded.favorites))
-            dispatch(profile.logIn(res.data.response))
-            setTimeout(() => {
-                setLogged(false)
-            }, 1000)
+        response.then((res)=>{
+          localStorage.setItem("token", res.data.response.token)
+          localStorage.setItem("user", JSON.stringify(res.data.response.userFinded))
+          localStorage.setItem("favorites", JSON.stringify(res.data.response.userFinded.favorites))
+          dispatch(profile.logIn(res.data.response))
+          setTimeout(() => {
+            setLogged(false)
+        }, 1000)
         })
     }
 
@@ -97,11 +91,15 @@ const SignInEmergent = ({ setLogged }) => {
                     </div>
 
                 </form>
+                <div className='w-full absolute top-[65%] left-[10%]'>
+            <p className='text-[#999] text-xl font-semibold'>Test account:</p>
+            <p className='text-[#999]'>MyTinerary@gmail.com</p>
+            <p className='text-[#999]'>hola1234</p>
+            </div>
                 <div className='w-full lg:h-1/5 h-[18vh]  flex flex-col items-center justify-end gap-4'>
-                    <GoogleLogin render={renderProps => <button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
-                        <img src={google} alt="" />
-                        <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
-                    </button>} isSignedIn={true} clientId={clientID} onSuccess={onSuccess} onFailure={onFailure} cookiePolicy={'single_host_policy'} />
+                    <GoogleOAuthProvider clientId={clientID}>
+                    <GoogleLogin isSignedIn={true} onSuccess={onSuccess} onFailure={onFailure} cookiePolicy={'single_host_policy'} />
+                    </GoogleOAuthProvider>
                 </div>
             </div>
         </div>

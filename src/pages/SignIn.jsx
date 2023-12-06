@@ -8,7 +8,9 @@ import showPassword from '../assets/showPassword.png'
 import notShowPassword from '../assets/notShowPassword.png'
 import google from '../assets/google.png'
 import SignInVideo from '../assets/SignInVideo.mp4'
-import GoogleLogin from '@stack-pulse/next-google-login'
+import { GoogleLogin } from '@react-oauth/google'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+// import decodeJWT from '../utils/decodeJWT'
 
 const SignIn = () => {
   const clientID=`1038794978290-vqmqvftrhegrv0ebt2sb92lcmbr1am4u.apps.googleusercontent.com`
@@ -38,12 +40,8 @@ const SignIn = () => {
       }
     })
   }
-  const onSuccess=(res)=>{
-    const objeto = {
-      email: res.profileObj.email,
-      password: res.profileObj.googleId
-    }
-    const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/SignIn', objeto)
+  const onSuccess=async(res)=>{
+    const response = axios.post('https://mytinerarybackend-7pod.onrender.com/auth/GoogleSignIn',res)
     toast.promise(response, {
       loading: 'Getting user',
       success: (data) => data.data.message,
@@ -56,6 +54,10 @@ const SignIn = () => {
       dispatch(profile.logIn(res.data.response))
       setTimeout(() => {
         navigate('/')
+      }, 2000)
+    }).catch(()=>{
+      setTimeout(() => {
+        navigate('/Register')
       }, 2000)
     })
   }
@@ -145,11 +147,15 @@ const SignIn = () => {
                 </button>
               </div>
             </div>}
+            <div className='w-full'>
+            <p className='text-[#999] text-xl font-semibold'>Test account:</p>
+            <p className='text-[#999]'>MyTinerary@gmail.com</p>
+            <p className='text-[#999]'>hola1234</p>
+            </div>
           <div className='w-full h-[8vh] border-t flex flex-col items-center justify-end gap-4'>
-            <GoogleLogin render={renderProps=><button onClick={renderProps.onClick} disabled={renderProps.disabled} className='w-full h-fit py-2 border shadow-md  rounded-lg flex items-center justify-center lg:gap-2'>
-              <img src={google} alt="" />
-              <p className='w-3/5 lg:w-4/6 text-sm lg:text-base'>SignIn with Google</p>
-            </button>} isSignedIn={true} clientId={clientID} onSuccess={onSuccess}  onFailure={onFailure} cookiePolicy={'single_host_policy'} />
+            <GoogleOAuthProvider clientId={clientID}>
+            <GoogleLogin isSignedIn={true} onSuccess={onSuccess}  onFailure={onFailure} cookiePolicy={'single_host_policy'} />
+            </GoogleOAuthProvider>
           </div>
         </div>
 
